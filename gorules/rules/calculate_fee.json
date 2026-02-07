@@ -1,0 +1,93 @@
+{
+  "nodes": [
+    {
+      "id": "inputNode",
+      "type": "inputNode",
+      "name": "Transaction Data",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": "feeTable",
+      "type": "decisionTableNode",
+      "name": "Fee Calculation",
+      "content": {
+        "hitPolicy": "first",
+        "inputs": [
+          {
+            "id": "in1",
+            "name": "Amount",
+            "field": "amount"
+          },
+          {
+            "id": "in2",
+            "name": "User Type",
+            "field": "userType"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "out1",
+            "name": "Fee Percent",
+            "field": "feePercent"
+          },
+          {
+            "id": "out2",
+            "name": "Status",
+            "field": "status"
+          }
+        ],
+        "rules": [
+          {
+            "in1": "amount > 10000",
+            "in2": "\"premium\"",
+            "out1": "0.01",
+            "out2": "\"approved\""
+          },
+          {
+            "in1": "amount > 5000",
+            "in2": "\"standard\"",
+            "out1": "0.02",
+            "out2": "\"approved\""
+          },
+          {
+            "in1": "amount <= 5000",
+            "out1": "0.05",
+            "out2": "\"approved\""
+          },
+          {
+            "out1": "0.1",
+            "out2": "\"audit_required\""
+          }
+        ]
+      },
+      "position": {
+        "x": 200,
+        "y": 0
+      }
+    },
+    {
+      "id": "outputNode",
+      "type": "outputNode",
+      "name": "Final Result",
+      "position": {
+        "x": 400,
+        "y": 0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge1",
+      "sourceId": "inputNode",
+      "targetId": "feeTable"
+    },
+    {
+      "id": "edge2",
+      "sourceId": "feeTable",
+      "targetId": "outputNode"
+    }
+  ]
+}

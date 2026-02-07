@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  gorules:
+    build: ./gorules
+    container_name: gorules-engine
+    ports:
+      - "${GORULES_PORT:-9080}:8080"
+    volumes:
+      - ./gorules/rules:/app/rules
+    environment:
+      - PORT=8080
+      - RULES_DIR=/app/rules
+    restart: always
