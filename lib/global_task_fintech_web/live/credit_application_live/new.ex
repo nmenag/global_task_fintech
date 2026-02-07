@@ -79,11 +79,7 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.New do
                   field={@form[:document_type]}
                   type="select"
                   label="Document Type"
-                  options={[
-                    {"National ID (CC/INE)", "id_card"},
-                    {"Passport", "passport"},
-                    {"Driver's License", "license"}
-                  ]}
+                  options={Applications.get_document_types(@country)}
                   prompt="Select document type"
                 />
               </div>

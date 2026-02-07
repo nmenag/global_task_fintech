@@ -57,7 +57,6 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
       :status
     ])
     |> validate_inclusion(:country, ["MX", "CO"])
-    |> validate_inclusion(:document_type, ["id_card", "passport", "license"])
     |> validate_number(:monthly_income, greater_than: 0)
     |> validate_number(:amount_requested, greater_than: 0)
   end

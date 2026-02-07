@@ -83,6 +83,34 @@ defmodule GlobalTaskFintech.Applications do
     CreditApplication.changeset(application, attrs)
   end
 
+  @doc """
+  Returns the available document types for a given country.
+  """
+  def get_document_types("MX") do
+    [
+      {"INE", "ine"},
+      {"CURP", "curp"},
+      {"RFC", "rfc"},
+      {"pasaporte", "passport"}
+    ]
+  end
+
+  def get_document_types("CO") do
+    [
+      {"Cédula de Ciudadanía (CC)", "cc"},
+      {"Cédula de Extranjería (CE)", "ce"},
+      {"NIT", "nit"},
+      {"pasaporte", "passport"}
+    ]
+  end
+
+  def get_document_types(_) do
+    [
+      {"National ID", "id_card"},
+      {"Passport", "passport"}
+    ]
+  end
+
   # Private filtering helpers
 
   defp filter_by_country(query, nil), do: query
