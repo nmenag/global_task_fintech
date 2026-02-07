@@ -1,4 +1,4 @@
-defmodule GlobalTaskFintech.Domain.Entities.CreditApplication do
+defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
   @moduledoc """
   Domain entity representing a Credit Application.
   """

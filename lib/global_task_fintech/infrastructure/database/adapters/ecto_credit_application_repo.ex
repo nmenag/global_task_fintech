@@ -6,7 +6,7 @@ defmodule GlobalTaskFintech.Infrastructure.Database.Adapters.EctoCreditApplicati
 
   alias GlobalTaskFintech.Repo
   alias GlobalTaskFintech.Infrastructure.Database.Schemas.CreditApplicationSchema
-  alias GlobalTaskFintech.Domain.Entities.CreditApplication
+  alias GlobalTaskFintech.Domain.Models.CreditApplication
 
   @impl true
   def save(%CreditApplication{} = entity) do

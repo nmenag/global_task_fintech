@@ -1,8 +1,8 @@
-defmodule GlobalTaskFintech.Domain.UseCases.CreateCreditApplication do
+defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   @moduledoc """
   Use case for creating a new Credit Application.
   """
-  alias GlobalTaskFintech.Domain.Entities.CreditApplication
+  alias GlobalTaskFintech.Domain.Models.CreditApplication
   alias GlobalTaskFintech.Infrastructure.Database.Adapters.EctoCreditApplicationRepo
 
   # In a strict hexagonal setup, we might inject this or use a config

@@ -5,7 +5,7 @@ defmodule GlobalTaskFintech.Infrastructure.Database.Schemas.CreditApplicationSch
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias GlobalTaskFintech.Domain.Entities.CreditApplication
+  alias GlobalTaskFintech.Domain.Models.CreditApplication
 
   schema "credit_applications" do
     field :country, :string

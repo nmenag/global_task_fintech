@@ -8,7 +8,8 @@ defmodule GlobalTaskFintech.Applications do
 
   alias GlobalTaskFintech.Infrastructure.Database.Schemas.CreditApplicationSchema
   alias GlobalTaskFintech.Infrastructure.Database.Adapters.EctoCreditApplicationRepo
-  alias GlobalTaskFintech.Domain.Entities.CreditApplication
+  alias GlobalTaskFintech.Domain.Models.CreditApplication
+  alias GlobalTaskFintech.Domain.Services.CreateCreditApplication
 
   @repo EctoCreditApplicationRepo
 
@@ -33,16 +34,14 @@ defmodule GlobalTaskFintech.Applications do
   Creates a credit_application.
   """
   def create_credit_application(attrs) do
-    # Using the repository directly for CRUD, or could use the Use Case
-    # To keep compatibility with LiveView, we return the {:ok, entity} or {:error, changeset}
+    CreateCreditApplication.execute(attrs)
+  end
 
-    %CreditApplicationSchema{}
-    |> CreditApplicationSchema.changeset(attrs)
-    |> Repo.insert()
-    |> case do
-      {:ok, schema} -> {:ok, CreditApplicationSchema.to_entity(schema)}
-      {:error, changeset} -> {:error, changeset}
-    end
+  @doc """
+  Initializes a new credit_application model.
+  """
+  def new_credit_application(attrs \\ %{}) do
+    struct(CreditApplication, attrs)
   end
 
   @doc """

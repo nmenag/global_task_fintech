@@ -4,7 +4,7 @@ defmodule GlobalTaskFintech.ApplicationsTest do
   alias GlobalTaskFintech.Applications
 
   describe "credit_applications" do
-    alias GlobalTaskFintech.Domain.Entities.CreditApplication
+    alias GlobalTaskFintech.Domain.Models.CreditApplication
 
     import GlobalTaskFintech.ApplicationsFixtures
 
