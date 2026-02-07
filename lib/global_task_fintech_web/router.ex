@@ -18,6 +18,7 @@ defmodule GlobalTaskFintechWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/credit-applications/:country/new", CreditApplicationLive.New
   end
 
   # Other scopes may use custom stacks.

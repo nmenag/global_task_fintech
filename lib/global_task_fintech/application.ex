@@ -10,7 +10,8 @@ defmodule GlobalTaskFintech.Application do
     children = [
       GlobalTaskFintechWeb.Telemetry,
       GlobalTaskFintech.Repo,
-      {DNSCluster, query: Application.get_env(:global_task_fintech, :dns_cluster_query) || :ignore},
+      {DNSCluster,
+       query: Application.get_env(:global_task_fintech, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: GlobalTaskFintech.PubSub},
       # Start a worker by calling: GlobalTaskFintech.Worker.start_link(arg)
       # {GlobalTaskFintech.Worker, arg},
