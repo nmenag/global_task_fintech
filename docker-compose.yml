@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: global_task_fintech_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=global_task_fintech_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
   gorules:
     build: ./gorules
     container_name: gorules-engine
@@ -12,3 +25,6 @@ services:
       - PORT=8080
       - RULES_DIR=/app/rules
     restart: always
+
+volumes:
+  postgres_data:
