@@ -6,5 +6,5 @@ defmodule GlobalTaskFintech.Domain.Ports.CreditApplicationRepo do
 
   @callback save(CreditApplication.t()) :: {:ok, CreditApplication.t()} | {:error, any()}
   @callback get(any()) :: {:ok, CreditApplication.t()} | {:error, :not_found}
-  @callback list() :: [CreditApplication.t()]
+  @callback list(map()) :: [CreditApplication.t()]
 end

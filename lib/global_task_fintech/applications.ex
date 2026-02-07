@@ -16,8 +16,8 @@ defmodule GlobalTaskFintech.Applications do
   @doc """
   Returns the list of credit_applications.
   """
-  def list_credit_applications do
-    @repo.list()
+  def list_credit_applications(filters \\ %{}) do
+    @repo.list(filters)
   end
 
   @doc """

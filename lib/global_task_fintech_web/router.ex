@@ -17,7 +17,8 @@ defmodule GlobalTaskFintechWeb.Router do
   scope "/", GlobalTaskFintechWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", CreditApplicationLive.Index
+    live "/credit-applications", CreditApplicationLive.Index
     live "/credit-applications/:country/new", CreditApplicationLive.New
   end
 
