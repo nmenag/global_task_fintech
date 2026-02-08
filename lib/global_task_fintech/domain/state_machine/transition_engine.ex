@@ -5,10 +5,11 @@ defmodule GlobalTaskFintech.Domain.StateMachine.TransitionEngine do
   require Logger
   alias GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob
   alias GlobalTaskFintech.Infrastructure.Audit.ComplianceAuditor
+  alias GlobalTaskFintech.Applications
 
   @workflows %{
-    "MX" => GlobalTaskFintech.Domain.StateMachine.MXWorkflow,
-    "CO" => GlobalTaskFintech.Domain.StateMachine.COWorkflow
+    "MX" => GlobalTaskFintech.Domain.StateMachine.MX,
+    "CO" => GlobalTaskFintech.Domain.StateMachine.CO
   }
 
   def transition(application, next_state, reason \\ nil) do
@@ -49,26 +50,22 @@ defmodule GlobalTaskFintech.Domain.StateMachine.TransitionEngine do
   end
 
   defp trigger_side_effects(old_status, new_app) do
-    event = %{
+    _event = %{
       application_id: new_app.id,
       from: old_status,
       to: new_app.status,
       timestamp: DateTime.utc_now()
     }
 
-    # 1. Audit Logging (Asynchronous)
     BackgroundJob.run(ComplianceAuditor, :log_creation, [new_app])
 
-    # 2. Domain Event Emission (Simulation)
     Logger.info("[EVENT] State Transition: #{old_status} -> #{new_app.status} for #{new_app.id}")
 
-    # 3. Country Specific Side Effects
     handle_specific_effects(new_app)
   end
 
   defp handle_specific_effects(%{country: "MX", status: :risk_check} = _app) do
     Logger.info("[SIDE-EFFECT] MX risk_check triggered. Re-evaluating risk payload...")
-    # BackgroundJob.run(GlobalTaskFintech.Domain.Services.EvaluateRisk, :execute, [app])
   end
 
   defp handle_specific_effects(_), do: :ok

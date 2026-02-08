@@ -1,4 +1,4 @@
-defmodule GlobalTaskFintech.Domain.StateMachine.COWorkflow do
+defmodule GlobalTaskFintech.Domain.StateMachine.CO do
   @moduledoc """
   Colombia-specific state transitions.
   Heavier focus on 'manual_review'.

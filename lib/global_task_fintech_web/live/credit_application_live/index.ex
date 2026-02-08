@@ -144,21 +144,29 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                     >
                       Date
                     </th>
+                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                      <span class="sr-only">Actions</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-zinc-800 bg-white dark:bg-zinc-900">
                   <tr :for={app <- @applications} class="hover:bg-gray-50 dark:hover:bg-zinc-800/50">
                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-100 sm:pl-6">
-                      {app.full_name}
+                      <.link
+                        navigate={~p"/credit-applications/#{app.id}"}
+                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                      >
+                        {app.full_name}
+                      </.link>
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {app.country}
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                      {app.monthly_income}
+                      ${app.monthly_income}
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                      {app.amount_requested}
+                      ${app.amount_requested}
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm">
                       <span class={[
@@ -168,7 +176,11 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                         app.status == :rejected &&
                           "bg-red-50 text-red-700 ring-red-600/10 dark:bg-red-900/30 dark:text-red-400",
                         app.status == :pending &&
-                          "bg-yellow-50 text-yellow-800 ring-yellow-600/20 dark:bg-yellow-900/30 dark:text-yellow-400"
+                          "bg-yellow-50 text-yellow-800 ring-yellow-600/20 dark:bg-yellow-900/30 dark:text-yellow-400",
+                        app.status == :manual_review &&
+                          "bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-900/30 dark:text-blue-400",
+                        app.status == :risk_check &&
+                          "bg-purple-50 text-purple-700 ring-purple-600/20 dark:bg-purple-900/30 dark:text-purple-400"
                       ]}>
                         {app.status}
                       </span>
@@ -189,6 +201,14 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {Calendar.strftime(app.inserted_at, "%Y-%m-%d %H:%M")}
+                    </td>
+                    <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                      <.link
+                        navigate={~p"/credit-applications/#{app.id}"}
+                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                      >
+                        View Details
+                      </.link>
                     </td>
                   </tr>
                   <tr :if={Enum.empty?(@applications)}>

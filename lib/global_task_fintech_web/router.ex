@@ -19,6 +19,7 @@ defmodule GlobalTaskFintechWeb.Router do
 
     live "/", CreditApplicationLive.Index
     live "/credit-applications", CreditApplicationLive.Index
+    live "/credit-applications/:id", CreditApplicationLive.Show, :show
     live "/credit-applications/:country/new", CreditApplicationLive.New
   end
 

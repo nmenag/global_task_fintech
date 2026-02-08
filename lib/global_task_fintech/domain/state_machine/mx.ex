@@ -1,4 +1,4 @@
-defmodule GlobalTaskFintech.Domain.StateMachine.MXWorkflow do
+defmodule GlobalTaskFintech.Domain.StateMachine.MX do
   @moduledoc """
   Mexico-specific state transitions.
   Includes a 'risk_check' intermediate state.
