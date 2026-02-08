@@ -7,6 +7,8 @@ defmodule GlobalTaskFintech.Applications do
   alias GlobalTaskFintech.Domain.Models.CreditApplication
   alias GlobalTaskFintech.Domain.Services.CreateCreditApplication
   alias GlobalTaskFintech.Infrastructure.Repositories.CreditApplicationRepository
+  alias GlobalTaskFintech.Domain.Services.EvaluateRisk
+  alias GlobalTaskFintech.Domain.Services.GetDocumentTypes
 
   @doc """
   Returns the list of credit_applications with optional filtering.
@@ -48,7 +50,38 @@ defmodule GlobalTaskFintech.Applications do
   Updates a credit_application.
   """
   def update_credit_application(%CreditApplication{} = application, attrs) do
-    CreditApplicationRepository.update(application, attrs)
+    case CreditApplicationRepository.update(application, attrs) do
+      {:ok, updated_application} ->
+        if needs_reevaluation?(attrs) do
+          GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob.run(
+            EvaluateRisk,
+            :execute,
+            [updated_application]
+          )
+        end
+
+        {:ok, updated_application}
+
+      error ->
+        error
+    end
+  end
+
+  defp needs_reevaluation?(attrs) do
+    relevant_keys = [
+      "monthly_income",
+      "amount_requested",
+      "country",
+      "document_type",
+      "document_number",
+      :monthly_income,
+      :amount_requested,
+      :country,
+      :document_type,
+      :document_number
+    ]
+
+    Enum.any?(relevant_keys, &Map.has_key?(attrs, &1))
   end
 
   @doc """
@@ -68,28 +101,7 @@ defmodule GlobalTaskFintech.Applications do
   @doc """
   Returns the available document types for a given country.
   """
-  def get_document_types("MX") do
-    [
-      {"INE", "ine"},
-      {"CURP", "curp"},
-      {"RFC", "rfc"},
-      {"pasaporte", "passport"}
-    ]
-  end
-
-  def get_document_types("CO") do
-    [
-      {"Cédula de Ciudadanía (CC)", "cc"},
-      {"Cédula de Extranjería (CE)", "ce"},
-      {"NIT", "nit"},
-      {"pasaporte", "passport"}
-    ]
-  end
-
-  def get_document_types(_) do
-    [
-      {"National ID", "id_card"},
-      {"Passport", "passport"}
-    ]
+  def get_document_types(country) do
+    GetDocumentTypes.execute(country)
   end
 end

@@ -6,7 +6,7 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   alias GlobalTaskFintech.Applications
   alias GlobalTaskFintech.Infrastructure.Banks
   alias GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob
-  alias GlobalTaskFintech.Infrastructure.Audit.AuditLogger
+  alias GlobalTaskFintech.Infrastructure.Audit.ComplianceAuditor
   alias GlobalTaskFintech.Domain.Services.EvaluateRisk
 
   def execute(attrs) do
@@ -47,7 +47,7 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   end
 
   defp trigger_side_effects(application) do
-    BackgroundJob.run(AuditLogger, :log_creation, [application])
+    BackgroundJob.run(ComplianceAuditor, :log_creation, [application])
 
     BackgroundJob.run(EvaluateRisk, :execute, [application])
   end

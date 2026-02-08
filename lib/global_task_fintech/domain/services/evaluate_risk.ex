@@ -10,11 +10,16 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
   def execute(application) do
     Logger.info("[RISK] Starting risk evaluation for application #{application.id}")
 
+    bank_data = application.bank_data || %{}
+
     payload = %{
       "country" => application.country,
+      "document_type" => String.upcase(application.document_type || ""),
+      "document_number" => application.document_number,
       "monthly_income" => application.monthly_income,
       "amount_requested" => application.amount_requested,
-      "credit_score" => application.bank_data["credit_score"]
+      "total_debt" => bank_data["total_debt"] || 0,
+      "credit_score" => bank_data["credit_score"]
     }
 
     case BusinessRulesClient.evaluate(payload, "credit_risk") do

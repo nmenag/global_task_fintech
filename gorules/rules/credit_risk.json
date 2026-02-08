@@ -27,6 +27,16 @@
             "field": "country"
           },
           {
+            "id": "document_type",
+            "name": "Document Type",
+            "field": "document_type"
+          },
+          {
+            "id": "document_number",
+            "name": "Document Number",
+            "field": "document_number"
+          },
+          {
             "id": "credit_score",
             "name": "Credit Score",
             "field": "credit_score"
@@ -40,6 +50,11 @@
             "id": "amount_requested",
             "name": "Amount Requested",
             "field": "amount_requested"
+          },
+          {
+            "id": "total_debt",
+            "name": "Total Debt",
+            "field": "total_debt"
           }
         ],
         "outputs": [
@@ -56,60 +71,136 @@
         ],
         "rules": [
           {
+            "country": "== \"CO\"",
+            "document_type": "!= \"CC\"",
+            "document_number": "",
+            "credit_score": "",
+            "monthly_income": "",
+            "amount_requested": "",
+            "total_debt": "",
+            "decision": "\"reject\"",
+            "reason": "\"Identity Document CC is required for Colombia\""
+          },
+          {
+            "country": "== \"CO\"",
+            "document_type": "== \"CC\"",
+            "document_number": "len($) < 6 || len($) > 10",
+            "credit_score": "",
+            "monthly_income": "",
+            "amount_requested": "",
+            "total_debt": "",
+            "decision": "\"reject\"",
+            "reason": "\"Invalid CC length (6-10 required)\""
+          },
+          {
+            "country": "== \"CO\"",
+            "document_type": "",
+            "document_number": "",
+            "credit_score": "$ == null",
+            "monthly_income": "",
+            "amount_requested": "",
+            "total_debt": "",
+            "decision": "\"reject\"",
+            "reason": "\"Banking data missing or failed for Colombia\""
+          },
+          {
+            "country": "== \"MX\"",
+            "document_type": "!= \"CURP\"",
+            "document_number": "",
+            "credit_score": "",
+            "monthly_income": "",
+            "amount_requested": "",
+            "total_debt": "",
+            "decision": "\"reject\"",
+            "reason": "\"Identity Document CURP is required for Mexico\""
+          },
+          {
+            "country": "== \"MX\"",
+            "document_type": "== \"CURP\"",
+            "document_number": "len($) != 18",
+            "credit_score": "",
+            "monthly_income": "",
+            "amount_requested": "",
+            "total_debt": "",
+            "decision": "\"reject\"",
+            "reason": "\"Invalid CURP length (18 characters required)\""
+          },
+          {
+            "country": "== \"MX\"",
+            "document_type": "",
+            "document_number": "",
+            "credit_score": "$ == null",
+            "monthly_income": "",
+            "amount_requested": "",
+            "total_debt": "",
+            "decision": "\"reject\"",
+            "reason": "\"Banking data missing or failed for Mexico\""
+          },
+          {
             "country": "",
+            "document_type": "",
+            "document_number": "",
             "credit_score": "< 500",
             "monthly_income": "",
             "amount_requested": "",
+            "total_debt": "",
             "decision": "\"reject\"",
             "reason": "\"Very low credit score\""
           },
           {
-            "country": "\"MX\"",
+            "country": "== \"MX\"",
+            "document_type": "",
+            "document_number": "",
             "credit_score": "< 600",
             "monthly_income": "",
             "amount_requested": "",
+            "total_debt": "",
             "decision": "\"reject\"",
             "reason": "\"Low credit score for Mexico\""
           },
           {
-            "country": "\"CO\"",
+            "country": "== \"CO\"",
+            "document_type": "",
+            "document_number": "",
             "credit_score": "< 650",
             "monthly_income": "",
             "amount_requested": "",
+            "total_debt": "",
             "decision": "\"reject\"",
             "reason": "\"Low credit score for Colombia\""
           },
           {
-            "country": "\"MX\"",
-            "credit_score": "",
-            "monthly_income": "< 8000",
-            "amount_requested": "",
-            "decision": "\"reject\"",
-            "reason": "\"Income below MX threshold\""
-          },
-          {
-            "country": "\"CO\"",
-            "credit_score": "",
-            "monthly_income": "< 1200000",
-            "amount_requested": "",
-            "decision": "\"reject\"",
-            "reason": "\"Income below CO threshold\""
-          },
-          {
-            "country": "",
+            "country": "== \"MX\"",
+            "document_type": "",
+            "document_number": "",
             "credit_score": "",
             "monthly_income": "",
             "amount_requested": "> monthly_income * 4",
+            "total_debt": "",
             "decision": "\"reject\"",
-            "reason": "\"Requested amount exceeds 4x income\""
+            "reason": "\"Requested amount exceeds 4x monthly income (MX limit)\""
           },
           {
-            "country": "",
+            "country": "== \"CO\"",
+            "document_type": "",
+            "document_number": "",
             "credit_score": "",
             "monthly_income": "",
             "amount_requested": "",
+            "total_debt": "> monthly_income * 0.5",
+            "decision": "\"reject\"",
+            "reason": "\"Total debt exceeds 50% of monthly income (CO limit)\""
+          },
+          {
+            "country": "",
+            "document_type": "",
+            "document_number": "",
+            "credit_score": "",
+            "monthly_income": "",
+            "amount_requested": "",
+            "total_debt": "",
             "decision": "\"approve\"",
-            "reason": "\"Passes all risk checks\""
+            "reason": "\"Passes all business rules\""
           }
         ]
       }

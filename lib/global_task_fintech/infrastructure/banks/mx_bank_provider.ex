@@ -21,6 +21,7 @@ defmodule GlobalTaskFintech.Infrastructure.Banks.MxBankProvider do
       "bank_name" => raw["banco"],
       "account_status" => String.downcase(raw["status_pago"]),
       "credit_score" => raw["score_buro"],
+      "total_debt" => 0,
       "verified" => raw["status_pago"] == "al_corriente",
       "raw_response" => raw
     }
