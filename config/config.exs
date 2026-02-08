@@ -9,7 +9,11 @@ import Config
 
 config :global_task_fintech,
   ecto_repos: [GlobalTaskFintech.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  bank_providers: %{
+    "MX" => GlobalTaskFintech.Infrastructure.Banks.MxBankProvider,
+    "CO" => GlobalTaskFintech.Infrastructure.Banks.CoBankProvider
+  }
 
 # Configure the endpoint
 config :global_task_fintech, GlobalTaskFintechWeb.Endpoint,

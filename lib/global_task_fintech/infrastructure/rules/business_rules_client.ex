@@ -12,8 +12,6 @@ defmodule GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient do
     base_url = get_config(:base_url)
     api_key = get_config(:api_key)
 
-    # BusinessRules Agent evaluation endpoint usually follows this pattern
-    # For Zen Engine / BusinessRules Agent, it might be /api/v1/evaluate
     url = "#{base_url}/evaluate"
 
     Req.post(url,

@@ -37,6 +37,9 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.New do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset, as: :credit_application))}
+
+      {:error, reason} ->
+        {:noreply, put_flash(socket, :error, "Error: #{inspect(reason)}")}
     end
   end
 
