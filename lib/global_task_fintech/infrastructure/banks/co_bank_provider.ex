@@ -1,6 +1,6 @@
 defmodule GlobalTaskFintech.Infrastructure.Banks.CoBankProvider do
   @moduledoc """
-  Fake bank provider for Colombia (Bancolombia style).
+  Fake bank provider for Colombia (Bancolombia).
   """
   @behaviour GlobalTaskFintech.Domain.Ports.BankProvider
 

@@ -68,8 +68,6 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   defp fetch_bank_data(_), do: {:error, :invalid_attributes}
 
   defp put_bank_data(attrs, value) do
-    # Check if the map uses atom keys (common in tests) or string keys (common from external params)
-    # We use :country as the heuristic to decide the key type for :bank_data
     if Map.has_key?(attrs, :country) do
       Map.put(attrs, :bank_data, value)
     else

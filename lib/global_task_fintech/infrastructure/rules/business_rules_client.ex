@@ -15,7 +15,7 @@ defmodule GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient do
     url = "#{base_url}/evaluate/#{rule_name}"
 
     Req.post(url,
-      json: request_payload,
+      json: sanitize_payload(request_payload),
       headers: [
         {"x-api-key", api_key},
         {"content-type", "application/json"}
@@ -24,6 +24,18 @@ defmodule GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient do
     )
     |> handle_response()
   end
+
+  defp sanitize_payload(%Decimal{} = d), do: Decimal.to_float(d)
+
+  defp sanitize_payload(payload) when is_map(payload) do
+    Map.new(payload, fn {k, v} -> {k, sanitize_payload(v)} end)
+  end
+
+  defp sanitize_payload(payload) when is_list(payload) do
+    Enum.map(payload, &sanitize_payload/1)
+  end
+
+  defp sanitize_payload(payload), do: payload
 
   defp handle_response({:ok, %Req.Response{status: 200, body: body}}) do
     {:ok, normalize_result(body)}
