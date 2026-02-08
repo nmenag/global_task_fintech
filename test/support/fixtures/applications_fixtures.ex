@@ -14,7 +14,7 @@ defmodule GlobalTaskFintech.ApplicationsFixtures do
         amount_requested: "120.5",
         country: "MX",
         document_type: "id_card",
-        document_value: "some document_value",
+        document_number: "some document_number",
         full_name: "some full_name",
         monthly_income: "120.5"
       })

@@ -5,10 +5,10 @@ defmodule GlobalTaskFintech.Infrastructure.Banks do
   If a country is not supported, it returns an error.
   """
 
-  def fetch_data(country, doc_type, doc_value) do
+  def fetch_data(country, document_type, document_number) do
     case get_provider(country) do
       {:ok, provider} ->
-        provider.fetch_data(doc_type, doc_value)
+        provider.fetch_data(document_type, document_number)
 
       {:error, :unsupported_country} ->
         {:error, :unsupported_country}

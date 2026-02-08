@@ -12,7 +12,7 @@ defmodule GlobalTaskFintech.ApplicationsTest do
       country: nil,
       full_name: nil,
       document_type: nil,
-      document_value: nil,
+      document_number: nil,
       monthly_income: nil,
       amount_requested: nil
     }
@@ -32,7 +32,7 @@ defmodule GlobalTaskFintech.ApplicationsTest do
         country: "MX",
         full_name: "some full_name",
         document_type: "id_card",
-        document_value: "some document_value",
+        document_number: "some document_number",
         monthly_income: "120.5",
         amount_requested: "120.5"
       }
@@ -43,7 +43,7 @@ defmodule GlobalTaskFintech.ApplicationsTest do
       assert credit_application.country == "MX"
       assert credit_application.full_name == "some full_name"
       assert credit_application.document_type == "id_card"
-      assert credit_application.document_value == "some document_value"
+      assert credit_application.document_number == "some document_number"
       assert credit_application.monthly_income == Decimal.new("120.5")
       assert credit_application.amount_requested == Decimal.new("120.5")
     end
@@ -59,7 +59,7 @@ defmodule GlobalTaskFintech.ApplicationsTest do
         country: "CO",
         full_name: "some updated full_name",
         document_type: "passport",
-        document_value: "some updated document_value",
+        document_number: "some updated document_number",
         monthly_income: "456.7",
         amount_requested: "456.7"
       }
@@ -70,7 +70,7 @@ defmodule GlobalTaskFintech.ApplicationsTest do
       assert credit_application.country == "CO"
       assert credit_application.full_name == "some updated full_name"
       assert credit_application.document_type == "passport"
-      assert credit_application.document_value == "some updated document_value"
+      assert credit_application.document_number == "some updated document_number"
       assert credit_application.monthly_income == Decimal.new("456.7")
       assert credit_application.amount_requested == Decimal.new("456.7")
     end

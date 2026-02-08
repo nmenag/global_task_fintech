@@ -10,12 +10,10 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   alias GlobalTaskFintech.Domain.Services.EvaluateRisk
 
   def execute(attrs) do
-    attrs = stringify_keys(attrs)
-
     case fetch_bank_data(attrs) do
       {:ok, bank_info} ->
         attrs
-        |> Map.put("bank_data", bank_info)
+        |> put_bank_data(bank_info)
         |> Applications.save_credit_application()
         |> case do
           {:ok, application} ->
@@ -36,7 +34,7 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
 
   defp save_without_bank_data(attrs) do
     attrs
-    |> Map.put("bank_data", nil)
+    |> put_bank_data(nil)
     |> Applications.save_credit_application()
     |> case do
       {:ok, application} ->
@@ -54,14 +52,28 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
     BackgroundJob.run(EvaluateRisk, :execute, [application])
   end
 
-  defp fetch_bank_data(%{"country" => country, "document_type" => type, "document_value" => val})
-       when not is_nil(country) and not is_nil(type) and not is_nil(val) do
-    Banks.fetch_data(country, type, val)
+  defp fetch_bank_data(%{
+         "country" => country,
+         "document_type" => document_type,
+         "document_number" => document_number
+       })
+       when not is_nil(country) and not is_nil(document_type) and not is_nil(document_number) do
+    Banks.fetch_data(country, document_type, document_number)
   end
+
+  defp fetch_bank_data(%{country: c, document_type: t, document_number: n})
+       when not is_nil(c) and not is_nil(t) and not is_nil(n),
+       do: Banks.fetch_data(c, t, n)
 
   defp fetch_bank_data(_), do: {:error, :invalid_attributes}
 
-  defp stringify_keys(attrs) do
-    for {k, v} <- attrs, into: %{}, do: {to_string(k), v}
+  defp put_bank_data(attrs, value) do
+    # Check if the map uses atom keys (common in tests) or string keys (common from external params)
+    # We use :country as the heuristic to decide the key type for :bank_data
+    if Map.has_key?(attrs, :country) do
+      Map.put(attrs, :bank_data, value)
+    else
+      Map.put(attrs, "bank_data", value)
+    end
   end
 end

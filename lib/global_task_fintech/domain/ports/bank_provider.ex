@@ -7,6 +7,6 @@ defmodule GlobalTaskFintech.Domain.Ports.BankProvider do
           String.t() => any()
         }
 
-  @callback fetch_data(document_type :: String.t(), document_value :: String.t()) ::
+  @callback fetch_data(document_type :: String.t(), document_number :: String.t()) ::
               {:ok, bank_data()} | {:error, any()}
 end

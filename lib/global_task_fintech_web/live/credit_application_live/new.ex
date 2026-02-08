@@ -89,7 +89,7 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.New do
 
               <div class="sm:col-span-3">
                 <.input
-                  field={@form[:document_value]}
+                  field={@form[:document_number]}
                   type="text"
                   label="Document Number"
                   placeholder="e.g. 123456789"

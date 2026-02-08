@@ -12,7 +12,7 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
     field :country, :string
     field :full_name, :string
     field :document_type, :string
-    field :document_value, :string
+    field :document_number, :string
     field :monthly_income, :decimal
     field :amount_requested, :decimal
     field :status, Ecto.Enum, values: [:pending, :approved, :rejected], default: :pending
@@ -26,7 +26,7 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
           country: String.t(),
           full_name: String.t(),
           document_type: String.t(),
-          document_value: String.t(),
+          document_number: String.t(),
           monthly_income: Decimal.t(),
           amount_requested: Decimal.t(),
           status: :pending | :approved | :rejected,
@@ -41,7 +41,7 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
       :country,
       :full_name,
       :document_type,
-      :document_value,
+      :document_number,
       :monthly_income,
       :amount_requested,
       :status,
@@ -51,7 +51,7 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
       :country,
       :full_name,
       :document_type,
-      :document_value,
+      :document_number,
       :monthly_income,
       :amount_requested,
       :status

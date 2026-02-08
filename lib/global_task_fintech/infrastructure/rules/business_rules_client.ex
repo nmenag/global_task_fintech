@@ -38,7 +38,6 @@ defmodule GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient do
   end
 
   defp normalize_result(body) do
-    # BusinessRules usually returns an object with 'result' field
     case body do
       %{"result" => result} -> result
       _ -> body

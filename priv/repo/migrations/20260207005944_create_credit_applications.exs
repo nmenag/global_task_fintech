@@ -7,7 +7,7 @@ defmodule GlobalTaskFintech.Repo.Migrations.CreateCreditApplications do
       add :country, :string
       add :full_name, :string
       add :document_type, :string
-      add :document_value, :string
+      add :document_number, :string
       add :monthly_income, :decimal
       add :amount_requested, :decimal
 
