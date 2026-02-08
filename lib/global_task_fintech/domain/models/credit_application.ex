@@ -17,6 +17,7 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
     field :amount_requested, :decimal
     field :status, Ecto.Enum, values: [:pending, :approved, :rejected], default: :pending
     field :bank_data, :map
+    field :risk_reason, :string
 
     timestamps(type: :utc_datetime)
   end
@@ -31,6 +32,7 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
           amount_requested: Decimal.t(),
           status: :pending | :approved | :rejected,
           bank_data: map() | nil,
+          risk_reason: String.t() | nil,
           inserted_at: DateTime.t() | nil
         }
 
@@ -45,7 +47,8 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
       :monthly_income,
       :amount_requested,
       :status,
-      :bank_data
+      :bank_data,
+      :risk_reason
     ])
     |> validate_required([
       :country,

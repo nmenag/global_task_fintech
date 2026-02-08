@@ -9,7 +9,6 @@ defmodule GlobalTaskFintech.Infrastructure.Audit.ComplianceAuditor do
       "[COMPLIANCE] Credit Application created: ID=#{application.id}, Country=#{application.country}, Name=#{application.full_name}"
     )
 
-    # Simulate persistence or external call
     Process.sleep(500)
     :ok
   end

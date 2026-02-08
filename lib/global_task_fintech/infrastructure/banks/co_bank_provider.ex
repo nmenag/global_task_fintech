@@ -10,6 +10,7 @@ defmodule GlobalTaskFintech.Infrastructure.Banks.CoBankProvider do
       "referencia_interna" => "CO-#{:rand.uniform(999_999)}",
       "puntaje_datacredito" => 700 + :rand.uniform(200),
       "entidad" => "Bancolombia",
+      "estado_cuenta" => "ACTIVA",
       "deuda_total" => 500_000 + :rand.uniform(5_000_000)
     }
 
@@ -19,7 +20,7 @@ defmodule GlobalTaskFintech.Infrastructure.Banks.CoBankProvider do
   defp normalize(raw) do
     %{
       "bank_name" => raw["entidad"],
-      "account_status" => String.downcase(raw["estado_cuenta"]),
+      "account_status" => String.downcase(raw["estado_cuenta"] || "unknown"),
       "credit_score" => raw["puntaje_datacredito"],
       "total_debt" => raw["deuda_total"],
       "verified" => raw["estado_cuenta"] == "ACTIVA",

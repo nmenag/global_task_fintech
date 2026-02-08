@@ -130,6 +130,12 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                       scope="col"
                       class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
                     >
+                      Process Notes
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                    >
                       Bank Data
                     </th>
                     <th
@@ -167,6 +173,9 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                         {app.status}
                       </span>
                     </td>
+                    <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400 max-w-xs break-words">
+                      {app.risk_reason || "-"}
+                    </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm">
                       <div :if={app.bank_data} class="flex flex-col">
                         <span class="font-medium text-gray-900 dark:text-gray-100">
@@ -184,7 +193,7 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                   </tr>
                   <tr :if={Enum.empty?(@applications)}>
                     <td
-                      colspan="6"
+                      colspan="8"
                       class="py-10 text-center text-sm text-gray-500 dark:text-gray-400 italic"
                     >
                       No applications found.

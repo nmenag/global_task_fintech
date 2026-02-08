@@ -26,14 +26,15 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
       {:ok, %{"decision" => decision, "reason" => reason}} ->
         Logger.info("[RISK] Decision: #{decision}, Reason: #{reason}")
         status = get_status(decision)
-        update_status(application, status)
+        update_status(application, status, reason)
 
       {:ok, result} ->
         Logger.warning("[RISK] Unexpected response from rules engine: #{inspect(result)}")
-        update_status(application, "pending")
+        update_status(application, "pending", "Unexpected engine response")
 
       {:error, reason} ->
         Logger.error("[RISK] Failed to evaluate risk for #{application.id}: #{inspect(reason)}")
+        update_status(application, "pending", "Engine error: #{inspect(reason)}")
         :error
     end
   end
@@ -41,8 +42,12 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
   defp get_status("approve"), do: "approved"
   defp get_status(_), do: "rejected"
 
-  defp update_status(application, status) do
-    Applications.update_credit_application(application, %{"status" => status})
+  defp update_status(application, status, reason) do
+    Applications.update_credit_application(application, %{
+      "status" => status,
+      "risk_reason" => reason
+    })
+
     Logger.info("[RISK] Risk evaluation finished for #{application.id}. Status: #{status}")
     :ok
   end
