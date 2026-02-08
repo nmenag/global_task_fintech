@@ -1,0 +1,139 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "input-node",
+      "type": "inputNode",
+      "position": {
+        "x": 100,
+        "y": 100
+      },
+      "name": "Input"
+    },
+    {
+      "id": "decision-table-node",
+      "type": "decisionTableNode",
+      "position": {
+        "x": 400,
+        "y": 100
+      },
+      "name": "Credit Risk Table",
+      "content": {
+        "hitPolicy": "first",
+        "inputs": [
+          {
+            "id": "country",
+            "name": "Country",
+            "field": "country"
+          },
+          {
+            "id": "credit_score",
+            "name": "Credit Score",
+            "field": "credit_score"
+          },
+          {
+            "id": "monthly_income",
+            "name": "Monthly Income",
+            "field": "monthly_income"
+          },
+          {
+            "id": "amount_requested",
+            "name": "Amount Requested",
+            "field": "amount_requested"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "decision",
+            "name": "Decision",
+            "field": "decision"
+          },
+          {
+            "id": "reason",
+            "name": "Reason",
+            "field": "reason"
+          }
+        ],
+        "rules": [
+          {
+            "country": "",
+            "credit_score": "< 500",
+            "monthly_income": "",
+            "amount_requested": "",
+            "decision": "\"reject\"",
+            "reason": "\"Very low credit score\""
+          },
+          {
+            "country": "\"MX\"",
+            "credit_score": "< 600",
+            "monthly_income": "",
+            "amount_requested": "",
+            "decision": "\"reject\"",
+            "reason": "\"Low credit score for Mexico\""
+          },
+          {
+            "country": "\"CO\"",
+            "credit_score": "< 650",
+            "monthly_income": "",
+            "amount_requested": "",
+            "decision": "\"reject\"",
+            "reason": "\"Low credit score for Colombia\""
+          },
+          {
+            "country": "\"MX\"",
+            "credit_score": "",
+            "monthly_income": "< 8000",
+            "amount_requested": "",
+            "decision": "\"reject\"",
+            "reason": "\"Income below MX threshold\""
+          },
+          {
+            "country": "\"CO\"",
+            "credit_score": "",
+            "monthly_income": "< 1200000",
+            "amount_requested": "",
+            "decision": "\"reject\"",
+            "reason": "\"Income below CO threshold\""
+          },
+          {
+            "country": "",
+            "credit_score": "",
+            "monthly_income": "",
+            "amount_requested": "> monthly_income * 4",
+            "decision": "\"reject\"",
+            "reason": "\"Requested amount exceeds 4x income\""
+          },
+          {
+            "country": "",
+            "credit_score": "",
+            "monthly_income": "",
+            "amount_requested": "",
+            "decision": "\"approve\"",
+            "reason": "\"Passes all risk checks\""
+          }
+        ]
+      }
+    },
+    {
+      "id": "output-node",
+      "type": "outputNode",
+      "position": {
+        "x": 700,
+        "y": 100
+      },
+      "name": "Output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "sourceId": "input-node",
+      "targetId": "decision-table-node"
+    },
+    {
+      "id": "edge-2",
+      "sourceId": "decision-table-node",
+      "targetId": "output-node"
+    }
+  ]
+}

@@ -10,6 +10,8 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   alias GlobalTaskFintech.Domain.Services.EvaluateRisk
 
   def execute(attrs) do
+    attrs = stringify_keys(attrs)
+
     case fetch_bank_data(attrs) do
       {:ok, bank_info} ->
         attrs
@@ -52,9 +54,14 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
     BackgroundJob.run(EvaluateRisk, :execute, [application])
   end
 
-  defp fetch_bank_data(%{"country" => country, "document_type" => type, "document_value" => val}) do
+  defp fetch_bank_data(%{"country" => country, "document_type" => type, "document_value" => val})
+       when not is_nil(country) and not is_nil(type) and not is_nil(val) do
     Banks.fetch_data(country, type, val)
   end
 
   defp fetch_bank_data(_), do: {:error, :invalid_attributes}
+
+  defp stringify_keys(attrs) do
+    for {k, v} <- attrs, into: %{}, do: {to_string(k), v}
+  end
 end

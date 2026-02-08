@@ -23,19 +23,21 @@ app.post('/evaluate/:ruleName', async (req, res) => {
   const context = req.body;
 
   try {
-    const content = getRuleContent(ruleName);
-    if (!content) {
-      return res.status(404).json({ error: `Rule '${ruleName}' not found in ${RULES_DIR}` });
+    const rawContent = getRuleContent(ruleName);
+    if (!rawContent) {
+      return res.status(404).json({ error: `Rule '${ruleName}' not found` });
     }
 
-    console.log(`Evaluating rule: ${ruleName}`);
+    if (typeof context !== 'object' || context === null || Array.isArray(context)) {
+      return res.status(400).json({ error: 'Expected a JSON object as body' });
+    }
 
-    // Create a decision from the rule content and evaluate it
-    const decision = engine.createDecision(JSON.parse(content));
-    const result = await decision.evaluate(context);
-    res.json(result);
+    const decision = engine.createDecision(Buffer.from(rawContent));
+    const { performance, result } = await decision.evaluate(context);
+
+    res.json({ performance, result });
   } catch (err) {
-    console.error('Evaluation error:', err);
+    console.error('ZEN ERROR:', err.message);
     res.status(500).json({ error: err.message });
   }
 });

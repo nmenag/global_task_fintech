@@ -5,14 +5,14 @@ defmodule GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient do
   @behaviour GlobalTaskFintech.Domain.Ports.RulesEngine
 
   @doc """
-  Evaluates a set of facts against business rules using BusinessRules Agent.
+  Evaluates a set of facts against a specific rule using BusinessRules Agent.
   """
   @impl true
-  def evaluate(request_payload) do
+  def evaluate(request_payload, rule_name) do
     base_url = get_config(:base_url)
     api_key = get_config(:api_key)
 
-    url = "#{base_url}/evaluate"
+    url = "#{base_url}/evaluate/#{rule_name}"
 
     Req.post(url,
       json: request_payload,
@@ -20,8 +20,7 @@ defmodule GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient do
         {"x-api-key", api_key},
         {"content-type", "application/json"}
       ],
-      receive_timeout: 5000,
-      connect_timeout: 2000
+      receive_timeout: 5000
     )
     |> handle_response()
   end

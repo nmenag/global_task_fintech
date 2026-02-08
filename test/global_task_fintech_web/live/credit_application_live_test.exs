@@ -32,7 +32,7 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLiveTest do
 
     attrs = %{
       full_name: "Juan Perez",
-      document_type: "id_card",
+      document_type: "ine",
       document_value: "123456789",
       monthly_income: "1000",
       amount_requested: "5000"

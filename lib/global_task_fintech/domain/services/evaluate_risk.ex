@@ -17,8 +17,9 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
       "credit_score" => application.bank_data["credit_score"]
     }
 
-    case BusinessRulesClient.evaluate(payload) do
-      {:ok, %{"decision" => decision}} ->
+    case BusinessRulesClient.evaluate(payload, "credit_risk") do
+      {:ok, %{"decision" => decision, "reason" => reason}} ->
+        Logger.info("[RISK] Decision: #{decision}, Reason: #{reason}")
         status = get_status(decision)
         update_status(application, status)
 
@@ -32,7 +33,7 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
     end
   end
 
-  defp get_status("approved"), do: "approved"
+  defp get_status("approve"), do: "approved"
   defp get_status(_), do: "rejected"
 
   defp update_status(application, status) do
