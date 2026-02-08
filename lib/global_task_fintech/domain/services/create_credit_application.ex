@@ -3,15 +3,26 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   Service for creating a new Credit Application.
   """
   alias GlobalTaskFintech.Applications
+  alias GlobalTaskFintech.Infrastructure.Banks
 
   def execute(attrs) do
-    # Business logic could go here (e.g. checking blacklist, scoring, etc.)
-    # Then we delegate to the context for persistence.
+    # Fetch bank data based on country and document
+    bank_info = fetch_bank_data(attrs)
 
     attrs
     |> sanitize_attrs()
+    |> Map.put("bank_data", bank_info)
     |> Applications.save_credit_application()
   end
+
+  defp fetch_bank_data(%{"country" => country, "document_type" => type, "document_value" => val}) do
+    case Banks.fetch_data(country, type, val) do
+      {:ok, data} -> data
+      _ -> nil
+    end
+  end
+
+  defp fetch_bank_data(_), do: nil
 
   defp sanitize_attrs(attrs) do
     # Ensure status is set if missing, or other domain-specific sanitization

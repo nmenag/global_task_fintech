@@ -130,6 +130,12 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                       scope="col"
                       class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
                     >
+                      Bank Data
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                    >
                       Date
                     </th>
                   </tr>
@@ -160,6 +166,17 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                       ]}>
                         {app.status}
                       </span>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm">
+                      <div :if={app.bank_data} class="flex flex-col">
+                        <span class="font-medium text-gray-900 dark:text-gray-100">
+                          {app.bank_data["bank_name"]}
+                        </span>
+                        <span class="text-xs text-gray-500">
+                          Score: {app.bank_data["credit_score"]}
+                        </span>
+                      </div>
+                      <span :if={!app.bank_data} class="text-gray-400 italic">No data</span>
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {Calendar.strftime(app.inserted_at, "%Y-%m-%d %H:%M")}
