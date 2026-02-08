@@ -62,5 +62,9 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
     |> validate_inclusion(:country, ["MX", "CO"])
     |> validate_number(:monthly_income, greater_than: 0)
     |> validate_number(:amount_requested, greater_than: 0)
+    |> unique_constraint(:document_number,
+      name: :unique_pending_document_number,
+      message: "already has a pending application"
+    )
   end
 end
