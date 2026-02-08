@@ -4,8 +4,8 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
   Integrates with the external Rules Engine asynchronously.
   """
   require Logger
-  alias GlobalTaskFintech.Applications
   alias GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient
+  alias GlobalTaskFintech.Domain.StateMachine.TransitionEngine
 
   def execute(application) do
     Logger.info("[RISK] Starting risk evaluation for application #{application.id}")
@@ -43,12 +43,14 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
   defp get_status(_), do: "rejected"
 
   defp update_status(application, status, reason) do
-    Applications.update_credit_application(application, %{
-      "status" => status,
-      "risk_reason" => reason
-    })
+    case TransitionEngine.transition(application, status, reason) do
+      {:ok, _updated} ->
+        Logger.info("[RISK] Risk evaluation finished for #{application.id}. Status: #{status}")
+        :ok
 
-    Logger.info("[RISK] Risk evaluation finished for #{application.id}. Status: #{status}")
-    :ok
+      {:error, reason} ->
+        Logger.error("[RISK] State transition failed for #{application.id}: #{inspect(reason)}")
+        :error
+    end
   end
 end

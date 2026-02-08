@@ -15,7 +15,11 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
     field :document_number, :string
     field :monthly_income, :decimal
     field :amount_requested, :decimal
-    field :status, Ecto.Enum, values: [:pending, :approved, :rejected], default: :pending
+
+    field :status, Ecto.Enum,
+      values: [:pending, :approved, :rejected, :manual_review, :risk_check],
+      default: :pending
+
     field :bank_data, :map
     field :risk_reason, :string
 
