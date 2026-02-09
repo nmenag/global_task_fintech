@@ -36,7 +36,6 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
   end
 
   def handle_info({:application_created, application}, socket) do
-    # Only add to stream if it matches current filters (simplified for now to just add it)
     {:noreply,
      socket
      |> assign(:any_applications?, true)

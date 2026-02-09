@@ -3,8 +3,6 @@ defmodule GlobalTaskFintech.Domain.StateMachine.TransitionEngine do
   Core engine for handling state transitions, validations, and side effects.
   """
   require Logger
-  alias GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob
-  alias GlobalTaskFintech.Infrastructure.Audit.ComplianceAuditor
   alias GlobalTaskFintech.Applications
 
   @workflows %{
@@ -37,10 +35,8 @@ defmodule GlobalTaskFintech.Domain.StateMachine.TransitionEngine do
       "risk_reason" => reason || application.risk_reason
     }
 
-    # Transition must be atomic (Update DB)
     case Applications.update_credit_application(application, attrs) do
       {:ok, updated_app} ->
-        # Trigger Side Effects
         trigger_side_effects(application.status, updated_app)
         {:ok, updated_app}
 
@@ -50,15 +46,6 @@ defmodule GlobalTaskFintech.Domain.StateMachine.TransitionEngine do
   end
 
   defp trigger_side_effects(old_status, new_app) do
-    _event = %{
-      application_id: new_app.id,
-      from: old_status,
-      to: new_app.status,
-      timestamp: DateTime.utc_now()
-    }
-
-    BackgroundJob.run(ComplianceAuditor, :log_creation, [new_app])
-
     Logger.info("[EVENT] State Transition: #{old_status} -> #{new_app.status} for #{new_app.id}")
 
     handle_specific_effects(new_app)

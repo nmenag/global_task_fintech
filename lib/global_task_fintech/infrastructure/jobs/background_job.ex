@@ -6,7 +6,7 @@ defmodule GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob do
   require Logger
 
   def run(module, function, args) do
-    Task.start(fn ->
+    Task.Supervisor.start_child(GlobalTaskFintech.TaskSupervisor, fn ->
       try do
         apply(module, function, args)
       rescue

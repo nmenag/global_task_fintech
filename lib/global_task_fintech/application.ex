@@ -16,7 +16,8 @@ defmodule GlobalTaskFintech.Application do
       # Start a worker by calling: GlobalTaskFintech.Worker.start_link(arg)
       # {GlobalTaskFintech.Worker, arg},
       # Start to serve requests, typically the last entry
-      GlobalTaskFintechWeb.Endpoint
+      GlobalTaskFintechWeb.Endpoint,
+      {Task.Supervisor, name: GlobalTaskFintech.TaskSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

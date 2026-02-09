@@ -47,8 +47,6 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   end
 
   defp trigger_side_effects(application) do
-    BackgroundJob.run(ComplianceAuditor, :log_creation, [application])
-
     BackgroundJob.run(EvaluateRisk, :execute, [application])
   end
 

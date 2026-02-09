@@ -9,6 +9,7 @@ defmodule GlobalTaskFintech.Applications do
   alias GlobalTaskFintech.Infrastructure.Repositories.CreditApplicationRepository
   alias GlobalTaskFintech.Domain.Services.EvaluateRisk
   alias GlobalTaskFintech.Domain.Services.GetDocumentTypes
+  alias GlobalTaskFintech.Domain.Services.AuditService
 
   @doc """
   Returns the list of credit_applications with optional filtering.
@@ -34,6 +35,11 @@ defmodule GlobalTaskFintech.Applications do
           GlobalTaskFintech.PubSub,
           "credit_applications",
           {:application_created, application}
+        )
+
+        AuditService.log_async(:credit_application, application.id, :create,
+          new_state: application,
+          country: application.country
         )
 
         {:ok, application}
@@ -84,6 +90,17 @@ defmodule GlobalTaskFintech.Applications do
           {:application_updated, updated_application}
         )
 
+        action =
+          if application.status != updated_application.status,
+            do: :status_transition,
+            else: :update
+
+        AuditService.log_async(:credit_application, application.id, action,
+          previous_state: application,
+          new_state: updated_application,
+          country: updated_application.country
+        )
+
         {:ok, updated_application}
 
       error ->
@@ -112,7 +129,18 @@ defmodule GlobalTaskFintech.Applications do
   Deletes a credit_application.
   """
   def delete_credit_application(%CreditApplication{} = application) do
-    CreditApplicationRepository.delete(application)
+    case CreditApplicationRepository.delete(application) do
+      {:ok, deleted_application} ->
+        AuditService.log_async(:credit_application, application.id, :delete,
+          previous_state: application,
+          country: application.country
+        )
+
+        {:ok, deleted_application}
+
+      error ->
+        error
+    end
   end
 
   @doc """
