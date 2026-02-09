@@ -35,7 +35,7 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
       {:error, reason} ->
         Logger.error("[RISK] Failed to evaluate risk for #{application.id}: #{inspect(reason)}")
         update_status(application, "pending", "Engine error: #{inspect(reason)}")
-        :error
+        {:error, reason}
     end
   end
 
@@ -50,7 +50,7 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
 
       {:error, reason} ->
         Logger.error("[RISK] State transition failed for #{application.id}: #{inspect(reason)}")
-        :error
+        {:error, reason}
     end
   end
 end

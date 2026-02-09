@@ -7,11 +7,8 @@ defmodule GlobalTaskFintech.Applications do
   alias GlobalTaskFintech.Domain.Models.CreditApplication
   alias GlobalTaskFintech.Domain.Services.AuditService
   alias GlobalTaskFintech.Domain.Services.CreateCreditApplication
-  alias GlobalTaskFintech.Domain.Services.EvaluateRisk
   alias GlobalTaskFintech.Domain.Services.GetDocumentTypes
-  alias GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob
   alias GlobalTaskFintech.Infrastructure.Repositories.CreditApplicationRepository
-  alias GlobalTaskFintech.Infrastructure.Webhooks.WebhookService
 
   @doc """
   Returns the list of credit_applications with optional filtering.
@@ -150,8 +147,11 @@ defmodule GlobalTaskFintech.Applications do
     |> dispatch_reevaluation(application)
   end
 
-  defp dispatch_reevaluation(true, application),
-    do: BackgroundJob.run(EvaluateRisk, :execute, [application])
+  defp dispatch_reevaluation(true, application) do
+    %{"application_id" => application.id}
+    |> GlobalTaskFintech.Workers.RiskEvaluationWorker.new()
+    |> Oban.insert()
+  end
 
   defp dispatch_reevaluation(false, _), do: :ok
 
@@ -166,11 +166,9 @@ defmodule GlobalTaskFintech.Applications do
   defp resolve_update_action(_, _), do: :status_transition
 
   defp maybe_dispatch_webhook(:status_transition, application) do
-    BackgroundJob.run(
-      WebhookService,
-      :notify_status_change,
-      [application]
-    )
+    %{"application_id" => application.id}
+    |> GlobalTaskFintech.Workers.WebhookWorker.new()
+    |> Oban.insert()
   end
 
   defp maybe_dispatch_webhook(_, _), do: :ok

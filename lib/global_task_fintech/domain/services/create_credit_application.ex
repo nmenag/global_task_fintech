@@ -4,9 +4,7 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   Coordinates synchronous fetching and asynchronous side effects.
   """
   alias GlobalTaskFintech.Applications
-  alias GlobalTaskFintech.Domain.Services.EvaluateRisk
   alias GlobalTaskFintech.Infrastructure.Banks
-  alias GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob
 
   def execute(attrs) do
     case fetch_bank_data(attrs) do
@@ -46,7 +44,9 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
   end
 
   defp trigger_side_effects(application) do
-    BackgroundJob.run(EvaluateRisk, :execute, [application])
+    %{"application_id" => application.id}
+    |> GlobalTaskFintech.Workers.RiskEvaluationWorker.new()
+    |> Oban.insert()
   end
 
   defp fetch_bank_data(%{

@@ -2,8 +2,6 @@ defmodule GlobalTaskFintech.Domain.Services.AuditService do
   @moduledoc """
   Service for recording audit logs asynchronously.
   """
-  alias GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob
-  alias GlobalTaskFintech.Infrastructure.Repositories.AuditLogRepository
   require Logger
 
   @doc """
@@ -20,7 +18,9 @@ defmodule GlobalTaskFintech.Domain.Services.AuditService do
       metadata: opts[:metadata] || %{}
     }
 
-    BackgroundJob.run(AuditLogRepository, :log, [attrs])
+    %{"attrs" => attrs}
+    |> GlobalTaskFintech.Workers.AuditWorker.new()
+    |> Oban.insert()
   end
 
   defp sanitize_state(nil), do: nil

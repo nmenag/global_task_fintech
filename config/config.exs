@@ -72,6 +72,12 @@ config :global_task_fintech, GlobalTaskFintech.Infrastructure.Rules.BusinessRule
   base_url: System.get_env("BUSINESS_RULES_BASE_URL", "http://localhost:9080"),
   api_key: System.get_env("BUSINESS_RULES_API_KEY", "default_key")
 
+# Configure Oban
+config :global_task_fintech, Oban,
+  engine: Oban.Engines.Basic,
+  queues: [default: 10, risk: 5, webhooks: 5],
+  repo: GlobalTaskFintech.Repo
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

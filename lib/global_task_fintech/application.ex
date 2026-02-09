@@ -17,7 +17,8 @@ defmodule GlobalTaskFintech.Application do
       # {GlobalTaskFintech.Worker, arg},
       # Start to serve requests, typically the last entry
       GlobalTaskFintechWeb.Endpoint,
-      {Task.Supervisor, name: GlobalTaskFintech.TaskSupervisor}
+      {Task.Supervisor, name: GlobalTaskFintech.TaskSupervisor},
+      {Oban, Application.fetch_env!(:global_task_fintech, Oban)}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
