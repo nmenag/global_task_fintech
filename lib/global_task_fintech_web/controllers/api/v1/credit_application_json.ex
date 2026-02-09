@@ -30,5 +30,6 @@ defmodule GlobalTaskFintechWeb.Api.V1.CreditApplicationJSON do
       inserted_at: application.inserted_at,
       updated_at: application.updated_at
     }
+    |> GlobalTaskFintech.Utils.PIIMasker.mask()
   end
 end

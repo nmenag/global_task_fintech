@@ -12,10 +12,11 @@ defmodule GlobalTaskFintech.Domain.Services.AuditService do
       entity_type: to_string(entity_type),
       entity_id: entity_id,
       action: to_string(action),
-      previous_state: sanitize_state(opts[:previous_state]),
-      new_state: sanitize_state(opts[:new_state]),
+      previous_state:
+        opts[:previous_state] |> sanitize_state() |> GlobalTaskFintech.Utils.PIIMasker.mask(),
+      new_state: opts[:new_state] |> sanitize_state() |> GlobalTaskFintech.Utils.PIIMasker.mask(),
       country: opts[:country],
-      metadata: opts[:metadata] || %{}
+      metadata: opts[:metadata] |> GlobalTaskFintech.Utils.PIIMasker.mask() || %{}
     }
 
     oban_opts = if opts[:repo], do: [repo: opts[:repo]], else: []

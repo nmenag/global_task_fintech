@@ -82,7 +82,7 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Show do
             <div class="sm:col-span-1">
               <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Document Number</dt>
               <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                {@application.document_number}
+                {GlobalTaskFintech.Utils.PIIMasker.mask_value(@application.document_number)}
               </dd>
             </div>
             <div class="sm:col-span-1 border-t dark:border-zinc-800 pt-4">

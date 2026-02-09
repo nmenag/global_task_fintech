@@ -12,7 +12,7 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
     field :country, :string
     field :full_name, :string
     field :document_type, :string
-    field :document_number, :string
+    field :document_number, :string, redact: true
     field :monthly_income, :decimal
     field :amount_requested, :decimal
 
