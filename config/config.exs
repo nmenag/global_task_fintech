@@ -13,6 +13,9 @@ config :global_task_fintech,
   bank_providers: %{
     "MX" => GlobalTaskFintech.Infrastructure.Banks.MxBankProvider,
     "CO" => GlobalTaskFintech.Infrastructure.Banks.CoBankProvider
+  },
+  webhooks: %{
+    status_update_url: System.get_env("WEBHOOK_STATUS_UPDATE_URL", "")
   }
 
 # Configure the endpoint

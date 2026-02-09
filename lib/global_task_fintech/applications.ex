@@ -5,11 +5,13 @@ defmodule GlobalTaskFintech.Applications do
   """
 
   alias GlobalTaskFintech.Domain.Models.CreditApplication
+  alias GlobalTaskFintech.Domain.Services.AuditService
   alias GlobalTaskFintech.Domain.Services.CreateCreditApplication
-  alias GlobalTaskFintech.Infrastructure.Repositories.CreditApplicationRepository
   alias GlobalTaskFintech.Domain.Services.EvaluateRisk
   alias GlobalTaskFintech.Domain.Services.GetDocumentTypes
-  alias GlobalTaskFintech.Domain.Services.AuditService
+  alias GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob
+  alias GlobalTaskFintech.Infrastructure.Repositories.CreditApplicationRepository
+  alias GlobalTaskFintech.Infrastructure.Webhooks.WebhookService
 
   @doc """
   Returns the list of credit_applications with optional filtering.
@@ -70,13 +72,7 @@ defmodule GlobalTaskFintech.Applications do
   def update_credit_application(%CreditApplication{} = application, attrs) do
     case CreditApplicationRepository.update(application, attrs) do
       {:ok, updated_application} ->
-        if needs_reevaluation?(attrs) do
-          GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob.run(
-            EvaluateRisk,
-            :execute,
-            [updated_application]
-          )
-        end
+        maybe_reevaluate_risk(updated_application, attrs)
 
         Phoenix.PubSub.broadcast(
           GlobalTaskFintech.PubSub,
@@ -90,10 +86,8 @@ defmodule GlobalTaskFintech.Applications do
           {:application_updated, updated_application}
         )
 
-        action =
-          if application.status != updated_application.status,
-            do: :status_transition,
-            else: :update
+        action = resolve_update_action(application, updated_application)
+        maybe_dispatch_webhook(action, updated_application)
 
         AuditService.log_async(:credit_application, application.id, action,
           previous_state: application,
@@ -150,10 +144,34 @@ defmodule GlobalTaskFintech.Applications do
     CreditApplication.changeset(application, attrs)
   end
 
+  defp maybe_reevaluate_risk(application, attrs) do
+    attrs
+    |> needs_reevaluation?()
+    |> dispatch_reevaluation(application)
+  end
+
+  defp dispatch_reevaluation(true, application),
+    do: BackgroundJob.run(EvaluateRisk, :execute, [application])
+
+  defp dispatch_reevaluation(false, _), do: :ok
+
   @doc """
   Returns the available document types for a given country.
   """
   def get_document_types(country) do
     GetDocumentTypes.execute(country)
   end
+
+  defp resolve_update_action(%{status: s}, %{status: s}), do: :update
+  defp resolve_update_action(_, _), do: :status_transition
+
+  defp maybe_dispatch_webhook(:status_transition, application) do
+    BackgroundJob.run(
+      WebhookService,
+      :notify_status_change,
+      [application]
+    )
+  end
+
+  defp maybe_dispatch_webhook(_, _), do: :ok
 end

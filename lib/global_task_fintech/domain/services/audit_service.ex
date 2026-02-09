@@ -2,8 +2,8 @@ defmodule GlobalTaskFintech.Domain.Services.AuditService do
   @moduledoc """
   Service for recording audit logs asynchronously.
   """
-  alias GlobalTaskFintech.Infrastructure.Repositories.AuditLogRepository
   alias GlobalTaskFintech.Infrastructure.Jobs.BackgroundJob
+  alias GlobalTaskFintech.Infrastructure.Repositories.AuditLogRepository
   require Logger
 
   @doc """

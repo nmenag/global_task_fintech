@@ -1,6 +1,9 @@
 defmodule GlobalTaskFintech.Infrastructure.Repositories.AuditLogRepository do
-  alias GlobalTaskFintech.Repo
+  @moduledoc """
+  Repository for persisting audit logs.
+  """
   alias GlobalTaskFintech.Domain.Models.AuditLog
+  alias GlobalTaskFintech.Repo
 
   require Logger
 

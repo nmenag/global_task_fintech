@@ -4,8 +4,8 @@ defmodule GlobalTaskFintech.Domain.Services.EvaluateRisk do
   Integrates with the external Rules Engine asynchronously.
   """
   require Logger
-  alias GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient
   alias GlobalTaskFintech.Domain.StateMachine.TransitionEngine
+  alias GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient
 
   def execute(application) do
     Logger.info("[RISK] Starting risk evaluation for application #{application.id}")

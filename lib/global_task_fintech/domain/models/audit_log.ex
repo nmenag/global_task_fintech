@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintech.Domain.Models.AuditLog do
+  @moduledoc """
+  Schema for persisting audit logs.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

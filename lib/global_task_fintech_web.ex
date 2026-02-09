@@ -88,8 +88,8 @@ defmodule GlobalTaskFintechWeb do
       import GlobalTaskFintechWeb.CoreComponents
 
       # Common modules used in templates
-      alias Phoenix.LiveView.JS
       alias GlobalTaskFintechWeb.Layouts
+      alias Phoenix.LiveView.JS
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())

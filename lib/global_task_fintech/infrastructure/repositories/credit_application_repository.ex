@@ -3,8 +3,8 @@ defmodule GlobalTaskFintech.Infrastructure.Repositories.CreditApplicationReposit
   Persistence logic for Credit Applications.
   """
   import Ecto.Query
-  alias GlobalTaskFintech.Repo
   alias GlobalTaskFintech.Domain.Models.CreditApplication
+  alias GlobalTaskFintech.Repo
 
   def list(filters \\ %{}) do
     query = from(c in CreditApplication, order_by: [desc: c.inserted_at])
