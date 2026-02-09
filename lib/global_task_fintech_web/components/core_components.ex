@@ -356,8 +356,12 @@ defmodule GlobalTaskFintechWeb.CoreComponents do
 
   def table(assigns) do
     assigns =
-      with %{rows: %Phoenix.LiveView.LiveStream{}} <- assigns do
-        assign(assigns, row_id: assigns.row_id || fn {id, _item} -> id end)
+      case assigns do
+        %{rows: %Phoenix.LiveView.LiveStream{}} ->
+          assign(assigns, row_id: assigns.row_id || fn {id, _item} -> id end)
+
+        _ ->
+          assigns
       end
 
     ~H"""

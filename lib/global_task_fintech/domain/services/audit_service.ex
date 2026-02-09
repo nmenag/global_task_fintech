@@ -18,9 +18,11 @@ defmodule GlobalTaskFintech.Domain.Services.AuditService do
       metadata: opts[:metadata] || %{}
     }
 
+    oban_opts = if opts[:repo], do: [repo: opts[:repo]], else: []
+
     %{"attrs" => attrs}
     |> GlobalTaskFintech.Workers.AuditWorker.new()
-    |> Oban.insert()
+    |> Oban.insert(oban_opts)
   end
 
   defp sanitize_state(nil), do: nil

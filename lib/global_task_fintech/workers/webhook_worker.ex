@@ -2,7 +2,10 @@ defmodule GlobalTaskFintech.Workers.WebhookWorker do
   @moduledoc """
   Oban worker for delivering webhooks.
   """
-  use Oban.Worker, queue: :webhooks, max_attempts: 5
+  use Oban.Worker,
+    queue: :webhooks,
+    max_attempts: 5,
+    unique: [period: 300, states: [:available, :scheduled, :retryable]]
 
   alias GlobalTaskFintech.Applications
   alias GlobalTaskFintech.Infrastructure.Webhooks.WebhookService

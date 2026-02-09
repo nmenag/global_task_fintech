@@ -21,4 +21,22 @@ defmodule GlobalTaskFintechWeb.FallbackController do
     |> put_view(json: GlobalTaskFintechWeb.ErrorJSON)
     |> render(:"404")
   end
+
+  def call(conn, {:error, :invalid_transition}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{status: "error", message: "Invalid state transition"})
+  end
+
+  def call(conn, {:error, :bad_request}) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{status: "error", message: "Bad request"})
+  end
+
+  def call(conn, {:error, reason}) when is_binary(reason) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{status: "error", message: reason})
+  end
 end

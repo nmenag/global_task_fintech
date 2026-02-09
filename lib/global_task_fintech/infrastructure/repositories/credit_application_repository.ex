@@ -18,6 +18,21 @@ defmodule GlobalTaskFintech.Infrastructure.Repositories.CreditApplicationReposit
 
   def get!(id), do: Repo.get!(CreditApplication, id)
 
+  def get(id), do: Repo.get(CreditApplication, id)
+
+  def get_for_update(id) do
+    CreditApplication
+    |> where(id: ^id)
+    |> lock("FOR UPDATE")
+    |> Repo.one()
+  end
+
+  def transaction(func) when is_function(func), do: Repo.transaction(func)
+
+  def rollback(reason), do: Repo.rollback(reason)
+
+  def default_transaction_opts, do: [repo: Repo]
+
   def save(attrs) do
     case attrs["id"] || attrs[:id] do
       nil ->

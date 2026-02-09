@@ -29,6 +29,11 @@ defmodule GlobalTaskFintechWeb.Router do
     resources "/credit-applications", CreditApplicationController, except: [:new, :edit]
   end
 
+  scope "/api/webhooks", GlobalTaskFintechWeb.Api do
+    pipe_through :api
+    post "/receive", WebhookController, :receive
+  end
+
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:global_task_fintech, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
