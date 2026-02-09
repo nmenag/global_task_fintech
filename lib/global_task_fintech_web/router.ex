@@ -23,10 +23,11 @@ defmodule GlobalTaskFintechWeb.Router do
     live "/credit-applications/:country/new", CreditApplicationLive.New
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", GlobalTaskFintechWeb do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", GlobalTaskFintechWeb.Api.V1 do
+    pipe_through :api
+
+    resources "/credit-applications", CreditApplicationController, except: [:new, :edit]
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:global_task_fintech, :dev_routes) do

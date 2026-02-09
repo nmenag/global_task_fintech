@@ -4,11 +4,14 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
   alias GlobalTaskFintech.Applications
 
   def mount(_params, _session, socket) do
+    if connected?(socket),
+      do: Phoenix.PubSub.subscribe(GlobalTaskFintech.PubSub, "credit_applications")
+
     {:ok,
-     assign(socket,
-       applications: [],
-       filters: %{"country" => "", "status" => "", "start_date" => "", "end_date" => ""}
-     )}
+     socket
+     |> assign(filters: %{"country" => "", "status" => "", "start_date" => "", "end_date" => ""})
+     |> assign(:any_applications?, false)
+     |> stream(:applications, [])}
   end
 
   def handle_params(params, _uri, socket) do
@@ -24,11 +27,24 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
     {:noreply,
      socket
      |> assign(:filters, filters)
-     |> assign(:applications, applications)}
+     |> assign(:any_applications?, !Enum.empty?(applications))
+     |> stream(:applications, applications, reset: true)}
   end
 
   def handle_event("filter", params, socket) do
     {:noreply, push_patch(socket, to: ~p"/credit-applications?#{params}")}
+  end
+
+  def handle_info({:application_created, application}, socket) do
+    # Only add to stream if it matches current filters (simplified for now to just add it)
+    {:noreply,
+     socket
+     |> assign(:any_applications?, true)
+     |> stream_insert(:applications, application, at: 0)}
+  end
+
+  def handle_info({:application_updated, application}, socket) do
+    {:noreply, stream_insert(socket, :applications, application)}
   end
 
   def render(assigns) do
@@ -191,8 +207,16 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-zinc-800 bg-white dark:bg-zinc-900">
-                  <tr :for={app <- @applications} class="hover:bg-gray-50 dark:hover:bg-zinc-800/50">
+                <tbody
+                  id="applications-table"
+                  phx-update="stream"
+                  class="divide-y divide-gray-200 dark:divide-zinc-800 bg-white dark:bg-zinc-900"
+                >
+                  <tr
+                    :for={{dom_id, app} <- @streams.applications}
+                    id={dom_id}
+                    class="hover:bg-gray-50 dark:hover:bg-zinc-800/50"
+                  >
                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-100 sm:pl-6">
                       <.link
                         navigate={~p"/credit-applications/#{app.id}"}
@@ -253,7 +277,7 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
                       </.link>
                     </td>
                   </tr>
-                  <tr :if={Enum.empty?(@applications)}>
+                  <tr :if={!@any_applications?}>
                     <td
                       colspan="8"
                       class="py-10 text-center text-sm text-gray-500 dark:text-gray-400 italic"

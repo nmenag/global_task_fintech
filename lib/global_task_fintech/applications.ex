@@ -28,7 +28,19 @@ defmodule GlobalTaskFintech.Applications do
   Creates a credit_application via the domain service.
   """
   def create_credit_application(attrs) do
-    CreateCreditApplication.execute(attrs)
+    case CreateCreditApplication.execute(attrs) do
+      {:ok, application} ->
+        Phoenix.PubSub.broadcast(
+          GlobalTaskFintech.PubSub,
+          "credit_applications",
+          {:application_created, application}
+        )
+
+        {:ok, application}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -59,6 +71,18 @@ defmodule GlobalTaskFintech.Applications do
             [updated_application]
           )
         end
+
+        Phoenix.PubSub.broadcast(
+          GlobalTaskFintech.PubSub,
+          "credit_applications",
+          {:application_updated, updated_application}
+        )
+
+        Phoenix.PubSub.broadcast(
+          GlobalTaskFintech.PubSub,
+          "credit_applications:#{updated_application.id}",
+          {:application_updated, updated_application}
+        )
 
         {:ok, updated_application}
 

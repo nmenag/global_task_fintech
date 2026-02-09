@@ -4,12 +4,19 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Show do
   alias GlobalTaskFintech.Applications
 
   def mount(%{"id" => id}, _session, socket) do
+    if connected?(socket),
+      do: Phoenix.PubSub.subscribe(GlobalTaskFintech.PubSub, "credit_applications:#{id}")
+
     application = Applications.get_credit_application!(id)
     {:ok, assign(socket, application: application, page_title: "Application Details")}
   end
 
   def handle_params(_params, _uri, socket) do
     {:noreply, socket}
+  end
+
+  def handle_info({:application_updated, application}, socket) do
+    {:noreply, assign(socket, :application, application)}
   end
 
   def render(assigns) do
