@@ -4,13 +4,19 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
   alias GlobalTaskFintech.Applications
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, applications: [], filters: %{"country" => "", "status" => ""})}
+    {:ok,
+     assign(socket,
+       applications: [],
+       filters: %{"country" => "", "status" => "", "start_date" => "", "end_date" => ""}
+     )}
   end
 
   def handle_params(params, _uri, socket) do
     filters = %{
       "country" => params["country"] || "",
-      "status" => params["status"] || ""
+      "status" => params["status"] || "",
+      "start_date" => params["start_date"] || "",
+      "end_date" => params["end_date"] || ""
     }
 
     applications = Applications.list_credit_applications(filters)
@@ -21,8 +27,7 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
      |> assign(:applications, applications)}
   end
 
-  def handle_event("filter", %{"country" => country, "status" => status}, socket) do
-    params = %{country: country, status: status}
+  def handle_event("filter", params, socket) do
     {:noreply, push_patch(socket, to: ~p"/credit-applications?#{params}")}
   end
 
@@ -84,7 +89,44 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.Index do
               <option value="pending" selected={@filters["status"] == "pending"}>Pending</option>
               <option value="approved" selected={@filters["status"] == "approved"}>Approved</option>
               <option value="rejected" selected={@filters["status"] == "rejected"}>Rejected</option>
+              <option value="manual_review" selected={@filters["status"] == "manual_review"}>
+                Manual Review
+              </option>
+              <option value="risk_check" selected={@filters["status"] == "risk_check"}>
+                Risk Check
+              </option>
             </select>
+          </div>
+
+          <div class="w-full sm:w-1/4">
+            <label
+              for="start_date"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Start Date
+            </label>
+            <input
+              type="date"
+              id="start_date"
+              name="start_date"
+              value={@filters["start_date"]}
+              onclick="this.showPicker()"
+              class="mt-1 block w-full rounded-md border-gray-300 py-2 px-3 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-200"
+            />
+          </div>
+
+          <div class="w-full sm:w-1/4">
+            <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              End Date
+            </label>
+            <input
+              type="date"
+              id="end_date"
+              name="end_date"
+              value={@filters["end_date"]}
+              onclick="this.showPicker()"
+              class="mt-1 block w-full rounded-md border-gray-300 py-2 px-3 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-200"
+            />
           </div>
         </form>
       </div>

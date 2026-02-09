@@ -12,6 +12,7 @@ defmodule GlobalTaskFintech.Infrastructure.Repositories.CreditApplicationReposit
     query
     |> filter_by_country(filters["country"])
     |> filter_by_status(filters["status"])
+    |> filter_by_date(filters)
     |> Repo.all()
   end
 
@@ -48,4 +49,28 @@ defmodule GlobalTaskFintech.Infrastructure.Repositories.CreditApplicationReposit
   defp filter_by_status(query, nil), do: query
   defp filter_by_status(query, ""), do: query
   defp filter_by_status(query, status), do: from(c in query, where: c.status == ^status)
+
+  defp filter_by_date(query, %{"start_date" => start_date, "end_date" => end_date}) do
+    query
+    |> maybe_filter_start_date(start_date)
+    |> maybe_filter_end_date(end_date)
+  end
+
+  defp filter_by_date(query, _), do: query
+
+  defp maybe_filter_start_date(query, date) when date in [nil, ""], do: query
+
+  defp maybe_filter_start_date(query, date) do
+    {:ok, dt} = Date.from_iso8601(date)
+    start_dt = DateTime.new!(dt, ~T[00:00:00], "Etc/UTC")
+    from(c in query, where: c.inserted_at >= ^start_dt)
+  end
+
+  defp maybe_filter_end_date(query, date) when date in [nil, ""], do: query
+
+  defp maybe_filter_end_date(query, date) do
+    {:ok, dt} = Date.from_iso8601(date)
+    end_dt = DateTime.new!(dt, ~T[23:59:59], "Etc/UTC")
+    from(c in query, where: c.inserted_at <= ^end_dt)
+  end
 end
