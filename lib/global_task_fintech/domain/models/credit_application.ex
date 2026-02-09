@@ -66,9 +66,26 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
     |> validate_inclusion(:country, ["MX", "CO"])
     |> validate_number(:monthly_income, greater_than: 0)
     |> validate_number(:amount_requested, greater_than: 0)
+    |> validate_document_number_format()
     |> unique_constraint(:document_number,
       name: :unique_pending_document_number,
       message: "already has a pending application"
     )
+  end
+
+  defp validate_document_number_format(changeset) do
+    country = get_field(changeset, :country)
+    doc_type = get_field(changeset, :document_type)
+
+    case {country, doc_type} do
+      {"MX", "curp"} ->
+        validate_length(changeset, :document_number, is: 18)
+
+      {"CO", "cc"} ->
+        validate_length(changeset, :document_number, min: 6, max: 10)
+
+      _ ->
+        changeset
+    end
   end
 end
