@@ -34,30 +34,44 @@ defmodule GlobalTaskFintechWeb.Layouts do
   slot :inner_block, required: true
 
   def app(assigns) do
+    assigns = Map.put_new(assigns, :current_user, nil)
+
     ~H"""
     <header class="navbar px-4 sm:px-6 lg:px-8">
       <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2">
+        <a href="/" class="flex-1 flex w-fit items-center gap-2 text-zinc-900 dark:text-zinc-100">
           <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
+          <span class="text-sm font-semibold">GlobalTask Fintech</span>
         </a>
       </div>
       <div class="flex-none">
         <ul class="flex flex-column px-1 space-x-4 items-center">
           <li>
-            <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
-          </li>
-          <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
-          </li>
-          <li>
             <.theme_toggle />
           </li>
-          <li>
-            <a href="https://hexdocs.pm/phoenix/overview.html" class="btn btn-primary">
-              Get Started <span aria-hidden="true">&rarr;</span>
-            </a>
-          </li>
+          <%= if @current_user do %>
+            <li class="flex items-center gap-4">
+              <span class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 hidden sm:inline-block">
+                {@current_user.full_name || @current_user.email}
+              </span>
+              <.link
+                href={~p"/logout"}
+                method="delete"
+                class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700 dark:text-zinc-300 dark:hover:text-zinc-100"
+              >
+                Log out
+              </.link>
+            </li>
+          <% else %>
+            <li>
+              <.link
+                href={~p"/login"}
+                class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700 dark:text-zinc-300 dark:hover:text-zinc-100"
+              >
+                Log in
+              </.link>
+            </li>
+          <% end %>
         </ul>
       </div>
     </header>

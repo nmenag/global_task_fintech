@@ -67,7 +67,9 @@ defmodule GlobalTaskFintech.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:oban, "~> 2.20"}
+      {:oban, "~> 2.20"},
+      {:guardian, "~> 2.3"},
+      {:argon2_elixir, "~> 3.0"}
     ]
   end
 

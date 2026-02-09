@@ -14,19 +14,39 @@ defmodule GlobalTaskFintechWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug GlobalTaskFintech.Infrastructure.Auth.Guardian.Pipeline
+  end
+
   scope "/", GlobalTaskFintechWeb do
     pipe_through :browser
 
-    live "/", CreditApplicationLive.Index
-    live "/credit-applications", CreditApplicationLive.Index
-    live "/credit-applications/:id", CreditApplicationLive.Show, :show
-    live "/credit-applications/:country/new", CreditApplicationLive.New
+    get "/login", SessionController, :new
+    post "/login", SessionController, :create
+    delete "/logout", SessionController, :delete
+
+    scope "/" do
+      pipe_through GlobalTaskFintech.Infrastructure.Auth.Guardian.Pipeline
+
+      live_session :authenticated, on_mount: [{GlobalTaskFintechWeb.Live.AuthHook, :default}] do
+        # Only allow authenticated users to see these
+        live "/", CreditApplicationLive.Index
+        live "/credit-applications", CreditApplicationLive.Index
+        live "/credit-applications/:id", CreditApplicationLive.Show, :show
+        live "/credit-applications/:country/new", CreditApplicationLive.New
+      end
+    end
   end
 
   scope "/api/v1", GlobalTaskFintechWeb.Api.V1 do
     pipe_through :api
 
-    resources "/credit-applications", CreditApplicationController, except: [:new, :edit]
+    post "/login", AuthController, :login
+
+    scope "/" do
+      pipe_through :auth
+      resources "/credit-applications", CreditApplicationController, except: [:new, :edit]
+    end
   end
 
   scope "/api/webhooks", GlobalTaskFintechWeb.Api do
