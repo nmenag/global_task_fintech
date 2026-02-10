@@ -52,7 +52,60 @@ sequenceDiagram
     O->>Webhooks: Notify External Systems
 ```
 
+### Database Schema
+```mermaid
+erDiagram
+    USERS {
+        binary_id id PK
+        string email
+        string password_hash
+        string full_name
+        string role
+        utc_datetime inserted_at
+        utc_datetime updated_at
+    }
+    CREDIT_APPLICATIONS {
+        binary_id id PK
+        string country
+        string full_name
+        string document_type
+        binary document_number "Encrypted"
+        binary document_number_hash "Indexed"
+        decimal monthly_income
+        decimal amount_requested
+        enum status
+        map bank_data
+        string risk_reason
+        utc_datetime inserted_at
+        utc_datetime updated_at
+    }
+    AUDIT_LOGS {
+        binary_id id PK
+        string entity_type
+        binary_id entity_id "FK-like"
+        string action
+        map previous_state
+        map new_state
+        string country
+        map metadata
+        utc_datetime inserted_at
+    }
+    OBAN_JOBS {
+        bigint id PK
+        string state
+        string queue
+        string worker
+        map args
+        integer priority
+        utc_datetime attempted_at
+        utc_datetime completed_at
+    }
+
+    CREDIT_APPLICATIONS ||--o{ AUDIT_LOGS : "logs transitions"
+```
+
 ---
+
 
 ## 🧠 Business Rules Engine (GoRules)
 
