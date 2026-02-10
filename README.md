@@ -296,6 +296,37 @@ The webhooks endpoint handles asynchronous status updates from external partners
 
 ---
 
+## 🧪 Testing & Quality
+
+The project maintains high code quality through automated testing, linting, and static analysis.
+
+### 1. Running Tests
+Execute the full test suite using:
+```bash
+mix test
+```
+
+### 2. Code Coverage
+Generate a coverage report using **ExCoveralls**:
+```bash
+mix coveralls.html
+```
+The report will be available in the `cover/` directory.
+
+### 3. Static Analysis & Linting
+Ensure the code adheres to the project's style guide and type safety:
+
+- **Credo**: For code style and consistency.
+  ```bash
+  mix credo
+  ```
+- **Dialyzer**: For static type checking.
+  ```bash
+  mix dialyzer
+  ```
+
+---
+
 ## 🏗️ Environment Variables
 
 - `SECRET_KEY`: Used for sessions and cookie signing.
