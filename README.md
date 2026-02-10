@@ -64,6 +64,42 @@ This project leverages **[GoRules Zen Engine](https://gorules.io/)** to manage c
 
 ---
 
+## 🏦 Bank Providers
+
+The system uses a **Normalization Layer** to interact with different banking APIs across countries.
+
+- **Strategy Pattern**: Different providers (e.g., `MxBankProvider`, `CoBankProvider`) implement the same behavior to fetch bank data.
+- **Configuration**: Providers are mapped in `config/config.exs` based on the application's country:
+  ```elixir
+  bank_providers: %{
+    "MX" => GlobalTaskFintech.Infrastructure.Banks.MxBankProvider,
+    "CO" => GlobalTaskFintech.Infrastructure.Banks.CoBankProvider
+  }
+  ```
+- **Normalization**: Each provider maps native API responses into a unified `bank_data` structure used by the Risk Engine.
+
+---
+
+## 🚦 State Machine & Transitions
+
+Application state is managed by a centralized **Transition Engine** that ensures strict workflow compliance.
+
+- **Workflow Validation**: Each country (MX, CO) has a defined set of allowed transitions (e.g., `pending -> risk_check` is allowed, but `rejected -> approved` is not).
+- **Side Effects**: Transitions trigger synchronous or asynchronous side effects, such as enqueuing Oban jobs for risk evaluation or audit logging.
+- **Audit Trails**: Every transition is automatically recorded in the `audit_logs` table (Transactional Outbox).
+
+---
+
+## ⚡ Caching Layer
+
+To optimize performance and reduce latency, the system implements an internal cache for external service calls.
+
+- **ETS Adapter**: By default, the `EtsAdapter` caches Rule Engine evaluation results.
+- **Deduplication**: Frequent calls with the same "facts" (e.g., income, amount) are served from memory instead of hitting the GoRules API.
+- **Extensibility**: The caching layer follows a clear adapter pattern, allowing easy swapping with Redis or Memcached in high-traffic environments.
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Local Development (Mix)
@@ -89,7 +125,6 @@ This project leverages **[GoRules Zen Engine](https://gorules.io/)** to manage c
 ### 2. Docker Compose
 Start the entire stack (App, DB, GoRules):
 ```bash
-docker compose build
 docker compose up -d
 ```
 Access at `http://localhost:4000`.
@@ -184,10 +219,13 @@ Create a new application.
 
 ---
 
-### 3. Webhooks
+### 3. Webhooks & Status Changes
 **POST** `/api/webhooks/receive`
 
-External status updates (public endpoint).
+The webhooks endpoint handles asynchronous status updates from external partners (e.g., manual reviewers, document verification services).
+
+- **State Validation**: Incoming status updates are piped through the `TransitionEngine`. If a transition is legally impossible (e.g., trying to set a `rejected` app to `risk_check`), the API returns `422 Unprocessable Entity`.
+- **Reasoning**: Always include a `reason` to populate the `risk_reason` field and audit log.
 
 **Request Body:**
 ```json
@@ -197,5 +235,21 @@ External status updates (public endpoint).
   "reason": "Risk check passed successfully"
 }
 ```
+
+**Workflow Example:**
+1. App is created -> `pending`
+2. Risk Job is processed -> Rules Engine sets it to `manual_review`
+3. External Webhook arrives -> Sets it to `approved` (Valid transition)
+
+---
+
+## 🏗️ Environment Variables
+
+- `SECRET_KEY`: Used for sessions and cookie signing.
+- `ENCRYPTION_KEY`: Base64 key for database-level PII encryption.
+- `DATABASE_URL`: Connection string for PostgreSQL.
+- `BUSINESS_RULES_BASE_URL`: URL for the GoRules BRMS service.
+- `WEBHOOK_STATUS_UPDATE_URL`: (Optional) URL to notify when statuses change.
+
 
 
