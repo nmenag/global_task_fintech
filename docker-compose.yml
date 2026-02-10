@@ -32,6 +32,8 @@ services:
       - PHX_HOST=localhost
       - PORT=4000
       - PHX_SERVER=true
+      - DATABASE_URL=ecto://postgres:password@db/global_task_fintech_dev
+      - BUSINESS_RULES_BASE_URL=http://gorules:8080
     depends_on:
       db:
         condition: service_health

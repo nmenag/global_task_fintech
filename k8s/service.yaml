@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+  namespace: global-task-fintech
+spec:
+  selector:
+    app: global-task-fintech
+    role: web
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000
+  type: ClusterIP
+---
+# Headless service for Erlang clustering (Peer Discovery)
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-headless
+  namespace: global-task-fintech
+spec:
+  selector:
+    app: global-task-fintech
+    # Select both web and worker pods to form a single distributed Erlang cluster
+    # This assumes both deployments share a common label like 'app: global-task-fintech'
+  ports:
+    - name: epmd
+      port: 4369
+      targetPort: 4369
+    # Add other ports if using specific distribution port range
+  clusterIP: None
+  publishNotReadyAddresses: true

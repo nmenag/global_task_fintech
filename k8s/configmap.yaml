@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: global-task-fintech
+data:
+  # Values adapted from .env for the Kubernetes environment
+  PHX_HOST: "global-task-fintech.local"
+  PORT: "4000"
+  POOL_SIZE: "10"
+  # Uses the internal Kubernetes service name 'gorules-service' on port 8080
+  BUSINESS_RULES_BASE_URL: "http://gorules-service:8080"
+  DNS_CLUSTER_QUERY: "app-headless"

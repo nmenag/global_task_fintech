@@ -10,6 +10,7 @@ import Config
 config :global_task_fintech,
   ecto_repos: [GlobalTaskFintech.Repo],
   generators: [timestamp_type: :utc_datetime],
+  dev_routes: true,
   bank_providers: %{
     "MX" => GlobalTaskFintech.Infrastructure.Banks.MxBankProvider,
     "CO" => GlobalTaskFintech.Infrastructure.Banks.CoBankProvider

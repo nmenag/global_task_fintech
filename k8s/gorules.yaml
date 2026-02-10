@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gorules
+  namespace: global-task-fintech
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gorules
+  template:
+    metadata:
+      labels:
+        app: gorules
+    spec:
+      containers:
+        - name: gorules
+          # Assuming you build and push this image to a registry. For local Kind/Minikube, you might need to load it.
+          # If using a public image or custom build:
+          image: global_task_fintech_gorules:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: RULES_DIR
+              value: "/app/rules"
+          # Mount rules if needed, or bake them into the image
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gorules-service
+  namespace: global-task-fintech
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: gorules

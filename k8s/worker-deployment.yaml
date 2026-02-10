@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-worker
+  namespace: global-task-fintech
+  labels:
+    app: global-task-fintech
+    role: worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: global-task-fintech
+      role: worker
+  template:
+    metadata:
+      labels:
+        app: global-task-fintech
+        role: worker
+    spec:
+      containers:
+        - name: worker
+          image: global_task_fintech:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PHX_SERVER
+              value: "false"
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          envFrom:
+            - secretRef:
+                name: app-secrets
+            - configMapRef:
+                name: app-config
+          livenessProbe:
+            exec:
+              command: ["/app/bin/global_task_fintech", "rpc", "Node.ping(Node.self()) == :pong"]
+            initialDelaySeconds: 10
+            periodSeconds: 30

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  namespace: global-task-fintech
+  annotations:
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+    # Needed for WebSocket support (Phoenix Channels/LiveView)
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/websocket-services: "app-service"
+spec:
+  rules:
+    - host: global-task-fintech.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  number: 4000

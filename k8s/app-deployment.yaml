@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-web
+  namespace: global-task-fintech
+  labels:
+    app: global-task-fintech
+    role: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: global-task-fintech
+      role: web
+  template:
+    metadata:
+      labels:
+        app: global-task-fintech
+        role: web
+    spec:
+      containers:
+        - name: app
+          image: global_task_fintech:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PHX_SERVER
+              value: "true"
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          envFrom:
+            - secretRef:
+                name: app-secrets
+            - configMapRef:
+                name: app-config
+          startupProbe:
+            httpGet:
+              path: /
+              port: 4000
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4000
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      # Ensure migration job runs before this starts via initContainer or Helm hooks.
+      # In raw manifests, you control the applying order manually.
