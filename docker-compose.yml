@@ -36,7 +36,7 @@ services:
       - BUSINESS_RULES_BASE_URL=http://gorules:8080
     depends_on:
       db:
-        condition: service_health
+        condition: service_healthy
       gorules:
         condition: service_started
 

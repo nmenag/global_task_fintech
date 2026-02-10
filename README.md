@@ -54,6 +54,16 @@ sequenceDiagram
 
 ---
 
+## 🧠 Business Rules Engine (GoRules)
+
+This project leverages **[GoRules Zen Engine](https://gorules.io/)** to manage complex decision-making logic outside of the core application code.
+
+- **Dynamic Evaluation**: Decisions such as risk scoring, eligibility checks, and country-specific field requirements are handled by GoRules.
+- **Rule Management**: Business rules are defined as decision tables/trees in the `gorules/rules/` directory.
+- **Seamless Integration**: The `BusinessRulesClient` provides an idiomatic Elixir interface to evaluate these rules via a lightweight JSON API.
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Local Development (Mix)
@@ -114,4 +124,78 @@ Access at `http://localhost:4000`.
 ### 3. Horizontal Scalability
 - **Distributed PubSub**: Real-time UI updates (LiveView) work across nodes using Phoenix.PubSub.
 - **Distributed Erlang**: Pods can form a cluster for state sharing and distributed task execution.
+
+---
+
+## 🔌 API Documentation
+
+All API requests expect `Content-Type: application/json` and return JSON responses.
+
+### 1. Authentication
+**POST** `/api/v1/login`
+
+Returns a JWT token required for all other endpoints (except webhooks).
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+**Success Response:** `200 OK`
+```json
+{
+  "status": "success",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": { "email": "user@example.com", "role": "admin" }
+}
+```
+
+---
+
+### 2. Credit Applications
+All endpoints require `Authorization: Bearer <token>`. Write operations (`POST`, `PUT`, `DELETE`) require **admin** role.
+
+#### **GET** `/api/v1/credit-applications`
+List all applications. Supports filtering (e.g., `?status=pending`).
+
+#### **GET** `/api/v1/credit-applications/:id`
+Fetch details of a specific application.
+
+#### **POST** `/api/v1/credit-applications`
+Create a new application.
+
+**Request Body:**
+```json
+{
+  "credit_application": {
+    "country": "MX",
+    "full_name": "Juan Perez",
+    "document_type": "curp",
+    "document_number": "ABC123456789012345",
+    "monthly_income": 50000,
+    "amount_requested": 150000,
+    "status": "pending"
+  }
+}
+```
+
+---
+
+### 3. Webhooks
+**POST** `/api/webhooks/receive`
+
+External status updates (public endpoint).
+
+**Request Body:**
+```json
+{
+  "application_id": "aa92cd8c-2ecf-4445-9ac6-0dcda74b1bbd",
+  "status": "approved",
+  "reason": "Risk check passed successfully"
+}
+```
+
 
