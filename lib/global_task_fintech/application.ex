@@ -10,6 +10,7 @@ defmodule GlobalTaskFintech.Application do
     children = [
       GlobalTaskFintechWeb.Telemetry,
       GlobalTaskFintech.Repo,
+      GlobalTaskFintech.Infrastructure.Cache.EtsAdapter,
       {DNSCluster,
        query: Application.get_env(:global_task_fintech, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: GlobalTaskFintech.PubSub},
