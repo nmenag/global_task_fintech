@@ -17,7 +17,6 @@ defmodule GlobalTaskFintech.Workers.RiskEvaluationWorker do
     case EvaluateRisk.execute(application) do
       :ok -> :ok
       {:error, reason} -> {:error, reason}
-      _ -> :ok
     end
   end
 end
