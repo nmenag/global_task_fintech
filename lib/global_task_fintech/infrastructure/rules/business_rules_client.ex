@@ -34,7 +34,6 @@ defmodule GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient do
 
   defp perform_evaluation(payload, rule_name) do
     base_url = get_config(:base_url)
-    api_key = get_config(:api_key)
 
     url = "#{base_url}/evaluate/#{rule_name}"
 
