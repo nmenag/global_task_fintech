@@ -45,5 +45,13 @@ defmodule GlobalTaskFintech.Domain.Services.AuditService do
   defp sanitize_value(tuple) when is_tuple(tuple),
     do: tuple |> Tuple.to_list() |> Enum.map(&sanitize_value/1)
 
+  defp sanitize_value(val) when is_binary(val) do
+    if String.valid?(val) do
+      val
+    else
+      Base.encode64(val)
+    end
+  end
+
   defp sanitize_value(val), do: val
 end

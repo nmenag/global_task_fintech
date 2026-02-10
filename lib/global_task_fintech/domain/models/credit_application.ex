@@ -12,7 +12,8 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
     field :country, :string
     field :full_name, :string
     field :document_type, :string
-    field :document_number, :string, redact: true
+    field :document_number, GlobalTaskFintech.Encrypted.Binary
+    field :document_number_hash, :binary
     field :monthly_income, :decimal
     field :amount_requested, :decimal
 
@@ -67,8 +68,9 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
     |> validate_number(:monthly_income, greater_than: 0)
     |> validate_number(:amount_requested, greater_than: 0)
     |> validate_document_number_format()
-    |> unique_constraint(:document_number,
-      name: :unique_pending_document_number,
+    |> put_document_number_hash()
+    |> unique_constraint(:document_number_hash,
+      name: :unique_pending_document_number_hash,
       message: "already has a pending application"
     )
   end
@@ -86,6 +88,16 @@ defmodule GlobalTaskFintech.Domain.Models.CreditApplication do
 
       _ ->
         changeset
+    end
+  end
+
+  defp put_document_number_hash(changeset) do
+    case get_change(changeset, :document_number) do
+      nil ->
+        changeset
+
+      document_number ->
+        put_change(changeset, :document_number_hash, :crypto.hash(:sha256, document_number))
     end
   end
 end

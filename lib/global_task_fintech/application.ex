@@ -9,6 +9,7 @@ defmodule GlobalTaskFintech.Application do
   def start(_type, _args) do
     children = [
       GlobalTaskFintechWeb.Telemetry,
+      GlobalTaskFintech.Vault,
       GlobalTaskFintech.Repo,
       GlobalTaskFintech.Infrastructure.Cache.EtsAdapter,
       {DNSCluster,

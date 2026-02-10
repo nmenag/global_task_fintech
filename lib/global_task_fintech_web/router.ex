@@ -37,7 +37,6 @@ defmodule GlobalTaskFintechWeb.Router do
       live_session :authenticated,
         on_mount: [{GlobalTaskFintechWeb.Live.AuthHook, :default}],
         layout: {GlobalTaskFintechWeb.Layouts, :app} do
-        # Only allow authenticated users to see these
         live "/", CreditApplicationLive.Index
         live "/credit-applications", CreditApplicationLive.Index
         live "/credit-applications/:id", CreditApplicationLive.Show, :show

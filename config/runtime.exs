@@ -23,6 +23,18 @@ end
 config :global_task_fintech, GlobalTaskFintechWeb.Endpoint,
   http: [port: String.to_integer(System.get_env("PORT", "4000"))]
 
+encryption_key =
+  System.get_env("ENCRYPTION_KEY") ||
+    raise """
+    environment variable ENCRYPTION_KEY is missing.
+    Please set it in your environment or .env file.
+    """
+
+config :global_task_fintech, GlobalTaskFintech.Vault,
+  ciphers: [
+    default: {Cloak.Ciphers.AES.GCM, tag: "AES.GCM.V1", key: Base.decode64!(encryption_key)}
+  ]
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

@@ -69,7 +69,8 @@ defmodule GlobalTaskFintech.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:oban, "~> 2.20"},
       {:guardian, "~> 2.3"},
-      {:argon2_elixir, "~> 3.0"}
+      {:argon2_elixir, "~> 4.1"},
+      {:cloak_ecto, "~> 1.3"}
     ]
   end
 
