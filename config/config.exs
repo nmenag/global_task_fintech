@@ -67,10 +67,10 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-# Configure BusinessRules Agent
-config :global_task_fintech, GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient,
-  base_url: System.get_env("BUSINESS_RULES_BASE_URL", "http://localhost:9080"),
-  api_key: System.get_env("BUSINESS_RULES_API_KEY", "default_key")
+# # Configure BusinessRules Agent
+# config :global_task_fintech, GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient,
+#   base_url: System.get_env("BUSINESS_RULES_BASE_URL", "http://localhost:9080"),
+#   api_key: System.get_env("BUSINESS_RULES_API_KEY", "default_key")
 
 # Configure Oban
 config :global_task_fintech, Oban,
@@ -79,9 +79,9 @@ config :global_task_fintech, Oban,
   repo: GlobalTaskFintech.Repo
 
 # Configure Guardian
-config :global_task_fintech, GlobalTaskFintech.Infrastructure.Auth.Guardian,
-  issuer: "global_task_fintech",
-  secret_key: System.get_env("SECRET_KEY")
+# config :global_task_fintech, GlobalTaskFintech.Infrastructure.Auth.Guardian,
+#   issuer: "global_task_fintech",
+#   secret_key: System.get_env("SECRET_KEY")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

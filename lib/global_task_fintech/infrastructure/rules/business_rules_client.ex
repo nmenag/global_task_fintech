@@ -41,7 +41,6 @@ defmodule GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient do
     Req.post(url,
       json: payload,
       headers: [
-        {"x-api-key", api_key},
         {"content-type", "application/json"}
       ],
       receive_timeout: 5000

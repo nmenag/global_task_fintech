@@ -35,6 +35,30 @@ config :global_task_fintech, GlobalTaskFintech.Vault,
     default: {Cloak.Ciphers.AES.GCM, tag: "AES.GCM.V1", key: Base.decode64!(encryption_key)}
   ]
 
+secret_key =
+  System.get_env("SECRET_KEY") ||
+    raise """
+    environment variable SECRET_KEY is missing.
+    You can generate one by calling: mix phx.gen.secret
+    """
+
+config :global_task_fintech, GlobalTaskFintech.Infrastructure.Auth.Guardian,
+  issuer: "global_task_fintech",
+  secret_key: secret_key
+
+config :global_task_fintech, GlobalTaskFintech.Infrastructure.Rules.BusinessRulesClient,
+  base_url: System.get_env("BUSINESS_RULES_BASE_URL", "http://localhost:9080"),
+  api_key: System.get_env("BUSINESS_RULES_API_KEY", "default_key")
+
+config :global_task_fintech,
+  webhooks: %{
+    status_update_url: System.get_env("WEBHOOK_STATUS_UPDATE_URL", "")
+  }
+
+# Configure the Endpoint secret_key_base with the same key if desired, or let the prod block handle it.
+# The prod block currently uses "SECRET_KEY" env var for secret_key_base.
+# I will use the `secret_key` variable I just defined.
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
@@ -58,12 +82,7 @@ if config_env() == :prod do
   # want to use a different value for prod and you most likely don't want
   # to check this value into version control, so we use an environment
   # variable instead.
-  secret_key_base =
-    System.get_env("SECRET_KEY_BASE") ||
-      raise """
-      environment variable SECRET_KEY_BASE is missing.
-      You can generate one by calling: mix phx.gen.secret
-      """
+  secret_key_base = secret_key
 
   host = System.get_env("PHX_HOST") || "example.com"
 

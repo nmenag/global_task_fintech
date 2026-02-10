@@ -1,0 +1,13 @@
+.git
+_build
+deps
+doc
+priv/static/
+priv/plts
+test
+.formatter.exs
+.env
+.env.*
+Dockerfile
+docker-compose.yml
+readme.md
