@@ -4,14 +4,21 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLive.New do
   alias GlobalTaskFintech.Applications
 
   def mount(%{"country" => country}, _session, socket) do
-    country = String.upcase(country)
+    if socket.assigns.current_user.role != "admin" do
+      {:ok,
+       socket
+       |> put_flash(:error, "You do not have permission to create applications.")
+       |> push_navigate(to: ~p"/credit-applications")}
+    else
+      country = String.upcase(country)
 
-    changeset =
-      Applications.change_credit_application(
-        Applications.new_credit_application(%{country: country})
-      )
+      changeset =
+        Applications.change_credit_application(
+          Applications.new_credit_application(%{country: country})
+        )
 
-    {:ok, assign(socket, form: to_form(changeset, as: :credit_application), country: country)}
+      {:ok, assign(socket, form: to_form(changeset, as: :credit_application), country: country)}
+    end
   end
 
   def handle_event("validate", %{"credit_application" => params}, socket) do

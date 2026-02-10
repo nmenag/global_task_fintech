@@ -15,7 +15,7 @@ defmodule GlobalTaskFintechWeb.Api.V1.AuthController do
         json(conn, %{
           status: "success",
           token: token,
-          user: %{email: user.email, full_name: user.full_name}
+          user: %{email: user.email, full_name: user.full_name, role: user.role}
         })
 
       {:error, :unauthorized} ->

@@ -12,12 +12,16 @@ defmodule GlobalTaskFintechWeb.Api.V1.CreditApplicationController do
   end
 
   def create(conn, %{"credit_application" => application_params}) do
-    with {:ok, %CreditApplication{} = application} <-
-           Applications.create_credit_application(application_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/v1/credit-applications/#{application}")
-      |> render(:show, credit_application: application)
+    if is_admin?(conn) do
+      with {:ok, %CreditApplication{} = application} <-
+             Applications.create_credit_application(application_params) do
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", ~p"/api/v1/credit-applications/#{application}")
+        |> render(:show, credit_application: application)
+      end
+    else
+      send_resp(conn, :forbidden, "Forbidden")
     end
   end
 
@@ -27,19 +31,32 @@ defmodule GlobalTaskFintechWeb.Api.V1.CreditApplicationController do
   end
 
   def update(conn, %{"id" => id, "credit_application" => application_params}) do
-    application = Applications.get_credit_application!(id)
+    if is_admin?(conn) do
+      application = Applications.get_credit_application!(id)
 
-    with {:ok, %CreditApplication{} = application} <-
-           Applications.update_credit_application(application, application_params) do
-      render(conn, :show, credit_application: application)
+      with {:ok, %CreditApplication{} = application} <-
+             Applications.update_credit_application(application, application_params) do
+        render(conn, :show, credit_application: application)
+      end
+    else
+      send_resp(conn, :forbidden, "Forbidden")
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    application = Applications.get_credit_application!(id)
+    if is_admin?(conn) do
+      application = Applications.get_credit_application!(id)
 
-    with {:ok, %CreditApplication{}} <- Applications.delete_credit_application(application) do
-      send_resp(conn, :no_content, "")
+      with {:ok, %CreditApplication{}} <- Applications.delete_credit_application(application) do
+        send_resp(conn, :no_content, "")
+      end
+    else
+      send_resp(conn, :forbidden, "Forbidden")
     end
+  end
+
+  defp is_admin?(conn) do
+    user = Guardian.Plug.current_resource(conn)
+    user && user.role == "admin"
   end
 end

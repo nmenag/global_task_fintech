@@ -8,6 +8,7 @@ defmodule GlobalTaskFintechWeb.Router do
     plug :put_root_layout, html: {GlobalTaskFintechWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :put_layout, html: {GlobalTaskFintechWeb.Layouts, :app}
   end
 
   pipeline :api do
@@ -18,17 +19,24 @@ defmodule GlobalTaskFintechWeb.Router do
     plug GlobalTaskFintech.Infrastructure.Auth.Guardian.Pipeline
   end
 
+  pipeline :require_auth do
+    plug Guardian.Plug.EnsureAuthenticated,
+      handler: GlobalTaskFintech.Infrastructure.Auth.Guardian.ErrorHandler
+  end
+
   scope "/", GlobalTaskFintechWeb do
-    pipe_through :browser
+    pipe_through [:browser, :auth]
 
     get "/login", SessionController, :new
     post "/login", SessionController, :create
     delete "/logout", SessionController, :delete
 
     scope "/" do
-      pipe_through GlobalTaskFintech.Infrastructure.Auth.Guardian.Pipeline
+      pipe_through :require_auth
 
-      live_session :authenticated, on_mount: [{GlobalTaskFintechWeb.Live.AuthHook, :default}] do
+      live_session :authenticated,
+        on_mount: [{GlobalTaskFintechWeb.Live.AuthHook, :default}],
+        layout: {GlobalTaskFintechWeb.Layouts, :app} do
         # Only allow authenticated users to see these
         live "/", CreditApplicationLive.Index
         live "/credit-applications", CreditApplicationLive.Index
@@ -44,7 +52,7 @@ defmodule GlobalTaskFintechWeb.Router do
     post "/login", AuthController, :login
 
     scope "/" do
-      pipe_through :auth
+      pipe_through [:auth, :require_auth]
       resources "/credit-applications", CreditApplicationController, except: [:new, :edit]
     end
   end

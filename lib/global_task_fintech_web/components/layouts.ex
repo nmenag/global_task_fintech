@@ -13,17 +13,6 @@ defmodule GlobalTaskFintechWeb.Layouts do
 
   @doc """
   Renders your app layout.
-
-  This function is typically invoked from every template,
-  and it often contains your application menu, sidebar,
-  or similar.
-
-  ## Examples
-
-      <Layouts.app flash={@flash}>
-        <h1>Content</h1>
-      </Layouts.app>
-
   """
   attr :flash, :map, required: true, doc: "the map of flash messages"
 
@@ -34,22 +23,12 @@ defmodule GlobalTaskFintechWeb.Layouts do
   slot :inner_block, required: true
 
   def app(assigns) do
-    assigns = Map.put_new(assigns, :current_user, nil)
-
     ~H"""
     <header class="navbar px-4 sm:px-6 lg:px-8">
-      <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2 text-zinc-900 dark:text-zinc-100">
-          <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">GlobalTask Fintech</span>
-        </a>
-      </div>
+      <div class="flex-1"></div>
       <div class="flex-none">
-        <ul class="flex flex-column px-1 space-x-4 items-center">
-          <li>
-            <.theme_toggle />
-          </li>
-          <%= if @current_user do %>
+        <ul class="flex flex-row px-1 space-x-4 items-center">
+          <%= if assigns[:current_user] do %>
             <li class="flex items-center gap-4">
               <span class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 hidden sm:inline-block">
                 {@current_user.full_name || @current_user.email}
@@ -57,9 +36,9 @@ defmodule GlobalTaskFintechWeb.Layouts do
               <.link
                 href={~p"/logout"}
                 method="delete"
-                class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700 dark:text-zinc-300 dark:hover:text-zinc-100"
+                class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Log out
+                Sign out
               </.link>
             </li>
           <% else %>
@@ -76,11 +55,9 @@ defmodule GlobalTaskFintechWeb.Layouts do
       </div>
     </header>
 
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
-      </div>
-    </main>
+    <div class="">
+      {@inner_content}
+    </div>
 
     <.flash_group flash={@flash} />
     """

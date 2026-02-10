@@ -10,7 +10,5 @@ defmodule GlobalTaskFintech.Infrastructure.Auth.Guardian.Pipeline do
   plug Guardian.Plug.VerifyHeader, claims: %{"typ" => "access"}
   # Load the user if either of the verifications worked
   plug Guardian.Plug.LoadResource, allow_blank: true
-
-  # Ensure the user is authenticated
-  plug Guardian.Plug.EnsureAuthenticated
+  plug GlobalTaskFintechWeb.Plugs.AssignUser
 end
