@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintech.Infrastructure.Cache.EtsAdapter do
+  @moduledoc """
+  In-memory cache adapter using ETS.
+  """
   use GenServer
 
   @behaviour GlobalTaskFintech.Domain.Ports.Cache

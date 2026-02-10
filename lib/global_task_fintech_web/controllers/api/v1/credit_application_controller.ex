@@ -12,7 +12,7 @@ defmodule GlobalTaskFintechWeb.Api.V1.CreditApplicationController do
   end
 
   def create(conn, %{"credit_application" => application_params}) do
-    if is_admin?(conn) do
+    if admin?(conn) do
       with {:ok, %CreditApplication{} = application} <-
              Applications.create_credit_application(application_params) do
         conn
@@ -31,7 +31,7 @@ defmodule GlobalTaskFintechWeb.Api.V1.CreditApplicationController do
   end
 
   def update(conn, %{"id" => id, "credit_application" => application_params}) do
-    if is_admin?(conn) do
+    if admin?(conn) do
       application = Applications.get_credit_application!(id)
 
       with {:ok, %CreditApplication{} = application} <-
@@ -44,7 +44,7 @@ defmodule GlobalTaskFintechWeb.Api.V1.CreditApplicationController do
   end
 
   def delete(conn, %{"id" => id}) do
-    if is_admin?(conn) do
+    if admin?(conn) do
       application = Applications.get_credit_application!(id)
 
       with {:ok, %CreditApplication{}} <- Applications.delete_credit_application(application) do
@@ -55,7 +55,7 @@ defmodule GlobalTaskFintechWeb.Api.V1.CreditApplicationController do
     end
   end
 
-  defp is_admin?(conn) do
+  defp admin?(conn) do
     user = Guardian.Plug.current_resource(conn)
     user && user.role == "admin"
   end

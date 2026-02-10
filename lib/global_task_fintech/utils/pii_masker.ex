@@ -13,9 +13,10 @@ defmodule GlobalTaskFintech.Utils.PIIMasker do
   def mask_value(v) when is_binary(v) do
     len = String.length(v)
 
-    cond do
-      len <= 4 -> "****"
-      true -> String.slice(v, 0, 2) <> String.duplicate("*", len - 4) <> String.slice(v, -2, 2)
+    if len <= 4 do
+      "****"
+    else
+      String.slice(v, 0, 2) <> String.duplicate("*", len - 4) <> String.slice(v, -2, 2)
     end
   end
 

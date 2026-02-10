@@ -66,7 +66,11 @@ defmodule GlobalTaskFintech.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
+
+      # tool box quality
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18.5", only: :test},
       {:oban, "~> 2.20"},
       {:guardian, "~> 2.3"},
       {:argon2_elixir, "~> 4.1"},

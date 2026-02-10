@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintech.Domain.Models.User do
+  @moduledoc """
+  Domain model representing a User in the system.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

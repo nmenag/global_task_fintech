@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintechWeb.Live.AuthHook do
+  @moduledoc """
+  on_mount hook to ensure LiveView sessions are authenticated.
+  """
   import Phoenix.Component
   import Phoenix.LiveView
 

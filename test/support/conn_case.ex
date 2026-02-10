@@ -23,12 +23,28 @@ defmodule GlobalTaskFintechWeb.ConnCase do
       @endpoint GlobalTaskFintechWeb.Endpoint
 
       use GlobalTaskFintechWeb, :verified_routes
+      alias GlobalTaskFintech.Infrastructure.Auth.Guardian
 
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import GlobalTaskFintechWeb.ConnCase
+      import GlobalTaskFintech.UserFixtures
     end
+  end
+
+  @doc """
+  Logs the given `user` into the `conn`.
+
+  It returns an updated `conn`.
+  """
+  def log_in_user(conn, user) do
+    {:ok, token, _claims} = GlobalTaskFintech.Infrastructure.Auth.Guardian.encode_and_sign(user)
+
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:guardian_default_token, token)
+    |> Plug.Conn.assign(:current_user, user)
   end
 
   setup tags do

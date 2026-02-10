@@ -1,6 +1,6 @@
 # GlobalTaskFintech
 
-A robust, event-driven FinTech application for managing global credit application workflows with country-specific business rules.
+FinTech application for managing global credit application workflows with country-specific business rules.
 
 ## 🏗️ Architecture Overview
 

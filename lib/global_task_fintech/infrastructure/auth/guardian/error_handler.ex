@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintech.Infrastructure.Auth.Guardian.ErrorHandler do
+  @moduledoc """
+  Handles authentication errors from Guardian.
+  """
   import Plug.Conn
   import Phoenix.Controller
 

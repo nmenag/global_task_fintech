@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintech.Release do
+  @moduledoc """
+  Handles database migrations for releases.
+  """
   @app :global_task_fintech
 
   def migrate do

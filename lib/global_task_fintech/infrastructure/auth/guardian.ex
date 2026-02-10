@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintech.Infrastructure.Auth.Guardian do
+  @moduledoc """
+  Guardian module for JWT authentication.
+  """
   use Guardian, otp_app: :global_task_fintech
 
   alias GlobalTaskFintech.Infrastructure.Repositories.UserRepository

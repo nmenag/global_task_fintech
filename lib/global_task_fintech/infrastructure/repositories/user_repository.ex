@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintech.Infrastructure.Repositories.UserRepository do
+  @moduledoc """
+  Repository for managing User persistence.
+  """
   alias GlobalTaskFintech.Domain.Models.User
   alias GlobalTaskFintech.Repo
 

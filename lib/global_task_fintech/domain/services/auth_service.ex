@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintech.Domain.Services.AuthService do
+  @moduledoc """
+  Service for handling user authentication and token generation.
+  """
   alias GlobalTaskFintech.Infrastructure.Repositories.UserRepository
   alias GlobalTaskFintech.Infrastructure.Auth.Guardian
 

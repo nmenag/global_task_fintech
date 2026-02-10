@@ -3,6 +3,11 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLiveTest do
 
   import Phoenix.LiveViewTest
 
+  setup %{conn: conn} do
+    user = user_fixture(%{role: "admin"})
+    %{conn: log_in_user(conn, user)}
+  end
+
   test "renders credit application form", %{conn: conn} do
     {:ok, view, html} = live(conn, ~p"/credit-applications/MX/new")
 
@@ -32,8 +37,8 @@ defmodule GlobalTaskFintechWeb.CreditApplicationLiveTest do
 
     attrs = %{
       full_name: "Juan Perez",
-      document_type: "ine",
-      document_number: "123456789",
+      document_type: "curp",
+      document_number: "ABC123456789012345",
       monthly_income: "1000",
       amount_requested: "5000"
     }

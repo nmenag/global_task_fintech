@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintech.Infrastructure.Auth.Guardian.Pipeline do
+  @moduledoc """
+  Plug pipeline for validating JWT tokens.
+  """
   use Guardian.Plug.Pipeline,
     otp_app: :global_task_fintech,
     error_handler: GlobalTaskFintech.Infrastructure.Auth.Guardian.ErrorHandler,

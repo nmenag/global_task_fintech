@@ -1,4 +1,7 @@
 defmodule GlobalTaskFintechWeb.Plugs.AssignUser do
+  @moduledoc """
+  Plug to assign the current user resource to the connection.
+  """
   import Plug.Conn
   alias GlobalTaskFintech.Infrastructure.Auth.Guardian
 
