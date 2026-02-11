@@ -14,7 +14,7 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
         |> Applications.save_credit_application()
         |> case do
           {:ok, application} ->
-            trigger_side_effects(application)
+            check_risk_evaluation(application)
             {:ok, application}
 
           {:error, changeset} ->
@@ -35,7 +35,7 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
     |> Applications.save_credit_application()
     |> case do
       {:ok, application} ->
-        trigger_side_effects(application)
+        check_risk_evaluation(application)
         {:ok, application}
 
       {:error, changeset} ->
@@ -43,7 +43,7 @@ defmodule GlobalTaskFintech.Domain.Services.CreateCreditApplication do
     end
   end
 
-  defp trigger_side_effects(application) do
+  defp check_risk_evaluation(application) do
     %{"application_id" => application.id}
     |> GlobalTaskFintech.Workers.RiskEvaluationWorker.new()
     |> Oban.insert()
