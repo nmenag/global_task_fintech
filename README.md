@@ -4,7 +4,8 @@ FinTech application for managing global credit application workflows with countr
 
 ## 🏗️ Architecture Overview
 
-The system is built on **Hexagonal Architecture** principles, ensuring a clean separation between domain logic and infrastructure. It leverages the **Transactional Outbox Pattern** to guarantee consistency between state changes and background side effects.
+The system is designed following Clean Architecture principles, adapted pragmatically to the Phoenix Framework ecosystem.
+It separates responsibilities into clear layers to ensure scalability, maintainability, and long-term evolvability.
 
 ### System Components
 ```mermaid
