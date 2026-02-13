@@ -9,8 +9,7 @@ The system is built on **Hexagonal Architecture** principles, ensuring a clean s
 ### System Components
 ```mermaid
 graph TD
-    User([User/API Client]) <--> LB[Load Balancer]
-    LB <--> Web[Web Service <br/>Phoenix + LiveView]
+    User([User/API Client]) <--> Web[Web Service <br/>Phoenix + LiveView]
 
     subgraph "Application Cluster"
         Web <--> Cluster[Distributed <br/>Erlang Cluster]
@@ -174,6 +173,26 @@ To optimize performance and reduce latency, the system implements an internal ca
    ```bash
    mix phx.server
    ```
+
+### 👤 Local User Access
+
+Default users are created during `mix setup` via `priv/repo/seeds.exs`:
+
+- **Admin User**: `admin@fintech.com` / `password123`
+- **Viewer User**: `viewer@fintech.com` / `password123`
+
+#### **Admin Sign-In (Web)**
+1. Start the server: `mix phx.server`
+2. Visit `http://localhost:4000/login`
+3. Enter admin credentials.
+
+#### **Admin Sign-In (API)**
+Retrieve a JWT token for authorized requests:
+```bash
+curl -X POST http://localhost:4000/api/v1/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@fintech.com", "password": "password123"}'
+```
 
 ### 2. Docker Compose
 Start the entire stack (App, DB, GoRules):
